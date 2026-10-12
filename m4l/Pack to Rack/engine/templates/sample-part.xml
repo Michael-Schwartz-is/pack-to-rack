@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='utf-8'?>
+<MultiSamplePart Id="0" InitUpdateAreSlicesFromOnsetsEditableAfterRead="false" HasImportedSlicePoints="false" NeedsAnalysisData="false">
+																<LomId Value="0" />
+																<Name Value="Alfaias-C#4-V1-7W1X" />
+																<Selection Value="true" />
+																<IsActive Value="true" />
+																<Solo Value="false" />
+																<KeyRange>
+																	<Min Value="60" />
+																	<Max Value="60" />
+																	<CrossfadeMin Value="60" />
+																	<CrossfadeMax Value="60" />
+																</KeyRange>
+																<VelocityRange>
+																	<Min Value="1" />
+																	<Max Value="8" />
+																	<CrossfadeMin Value="1" />
+																	<CrossfadeMax Value="8" />
+																</VelocityRange>
+																<SelectorRange>
+																	<Min Value="0" />
+																	<Max Value="127" />
+																	<CrossfadeMin Value="0" />
+																	<CrossfadeMax Value="127" />
+																</SelectorRange>
+																<RootKey Value="60" />
+																<Detune Value="0" />
+																<TuneScale Value="100" />
+																<Panorama Value="0" />
+																<Volume Value="1" />
+																<Link Value="false" />
+																<SampleStart Value="0" />
+																<SampleEnd Value="275624" />
+																<SustainLoop>
+																	<Start Value="0" />
+																	<End Value="275624" />
+																	<Mode Value="0" />
+																	<Crossfade Value="0" />
+																	<Detune Value="0" />
+																</SustainLoop>
+																<ReleaseLoop>
+																	<Start Value="0" />
+																	<End Value="275624" />
+																	<Mode Value="3" />
+																	<Crossfade Value="0" />
+																	<Detune Value="0" />
+																</ReleaseLoop>
+																<SampleRef>
+																	<FileRef>
+																		<RelativePathType Value="1" />
+																		<RelativePath Value="../../Shared/Music/Soundbanks/Ben Multisamples/Heavyocity/Damage/Ethnic/Alfaias/Close/Alfaias-C#4-V1-7W1X.wav" />
+																		<Path Value="/Users/Shared/Music/Soundbanks/Ben Multisamples/Heavyocity/Damage/Ethnic/Alfaias/Close/Alfaias-C#4-V1-7W1X.wav" />
+																		<Type Value="2" />
+																		<LivePackName Value="" />
+																		<LivePackId Value="" />
+																		<OriginalFileSize Value="1653794" />
+																		<OriginalCrc Value="43720" />
+																		<SourceHint Value="" />
+																	</FileRef>
+																	<LastModDate Value="1782915434" />
+																	<SourceContext />
+																	<SampleUsageHint Value="0" />
+																	<DefaultDuration Value="275625" />
+																	<DefaultSampleRate Value="44100" />
+																	<SamplesToAutoWarp Value="0" />
+																</SampleRef>
+																<SlicingThreshold Value="100" />
+																<SlicingBeatGrid Value="4" />
+																<SlicingRegions Value="8" />
+																<SlicingStyle Value="0" />
+																<SampleWarpProperties>
+																	<WarpMarkers />
+																	<WarpMode Value="0" />
+																	<GranularityTones Value="30" />
+																	<GranularityTexture Value="65" />
+																	<FluctuationTexture Value="25" />
+																	<ComplexProFormants Value="100" />
+																	<ComplexProEnvelope Value="128" />
+																	<TransientResolution Value="6" />
+																	<TransientLoopMode Value="2" />
+																	<TransientEnvelope Value="100" />
+																	<IsWarped Value="false" />
+																	<Onsets>
+																		<UserOnsets />
+																		<HasUserOnsets Value="false" />
+																	</Onsets>
+																	<TimeSignature>
+																		<TimeSignatures>
+																			<RemoteableTimeSignature Id="0">
+																				<Numerator Value="4" />
+																				<Denominator Value="4" />
+																				<Time Value="0" />
+																			</RemoteableTimeSignature>
+																		</TimeSignatures>
+																	</TimeSignature>
+																	<BeatGrid>
+																		<FixedNumerator Value="1" />
+																		<FixedDenominator Value="16" />
+																		<GridIntervalPixel Value="20" />
+																		<Ntoles Value="2" />
+																		<SnapToGrid Value="true" />
+																		<Fixed Value="false" />
+																	</BeatGrid>
+																</SampleWarpProperties>
+																<InitialSlicePointsFromOnsets />
+																<SlicePoints />
+																<ManualSlicePoints />
+																<BeatSlicePoints />
+																<RegionSlicePoints />
+																<UseDynamicBeatSlices Value="true" />
+																<UseDynamicRegionSlices Value="true" />
+																<AreSlicesFromOnsetsEditable Value="false" />
+															</MultiSamplePart>
+															

@@ -1,0 +1,5 @@
+__pycache__/
+exports/
+.DS_Store
+site-assets/
+archive/validation/

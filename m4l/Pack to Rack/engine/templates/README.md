@@ -1,0 +1,1 @@
+These templates are derived from Ben Juodvalkis' MIT-licensed Ableton-Device-Creator repository (https://github.com/ben-juodvalkis/Ableton-Device-Creator). The Drum Rack donor was authored in Live 12.4; the Instrument Rack donor in Live 12.1. See LICENSE. Sample-part metadata is replaced for each input file; no donor audio is included.
