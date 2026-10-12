@@ -1,0 +1,507 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="490" viewBox="0 0 660 490" role="img" aria-labelledby="title">
+  <title id="title">A hand drags a one-shots folder into Pack to Rack. The generated drum rack appears, then Rand changes the selected samples and selector knobs.</title>
+  <defs>
+    <radialGradient id="halo">
+      <stop stop-color="#616551" stop-opacity=".22" />
+      <stop offset="1" stop-color="#202020" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="160%">
+      <feDropShadow dx="0" dy="16" stdDeviation="15" flood-opacity=".3" />
+    </filter>
+  </defs>
+  <style>:root { --cycle: 7s; }
+text { font-family: Helvetica Neue, Helvetica, Arial, sans-serif; }
+.state { opacity:0; }
+.state-0 { opacity:1; }
+.state-0 { animation:state-0 var(--cycle) steps(1,end) infinite; }
+@keyframes state-0 { 0% {opacity:1} 40% {opacity:0} 60% {opacity:0} 80%,100% {opacity:0} }
+.state-1 { animation:state-1 var(--cycle) steps(1,end) infinite; }
+@keyframes state-1 { 0% {opacity:0} 40% {opacity:1} 60% {opacity:0} 80%,100% {opacity:0} }
+.state-2 { animation:state-2 var(--cycle) steps(1,end) infinite; }
+@keyframes state-2 { 0% {opacity:0} 40% {opacity:0} 60% {opacity:1} 80%,100% {opacity:0} }
+.state-3 { animation:state-3 var(--cycle) steps(1,end) infinite; }
+@keyframes state-3 { 0% {opacity:0} 40% {opacity:0} 60% {opacity:0} 80%,100% {opacity:1} }
+.knob-0 { transform:rotate(-50deg); animation:knob-0 var(--cycle) steps(1,end) infinite; }
+@keyframes knob-0 { 0% {transform:rotate(-50deg)} 40% {transform:rotate(25deg)} 60% {transform:rotate(-15deg)} 80%,100% {transform:rotate(60deg)} }
+.knob-1 { transform:rotate(-15deg); animation:knob-1 var(--cycle) steps(1,end) infinite; }
+@keyframes knob-1 { 0% {transform:rotate(-15deg)} 40% {transform:rotate(-50deg)} 60% {transform:rotate(60deg)} 80%,100% {transform:rotate(25deg)} }
+.knob-3 { transform:rotate(25deg); animation:knob-3 var(--cycle) steps(1,end) infinite; }
+@keyframes knob-3 { 0% {transform:rotate(25deg)} 40% {transform:rotate(60deg)} 60% {transform:rotate(-50deg)} 80%,100% {transform:rotate(-15deg)} }
+
+.rand-button { animation:click-flash var(--cycle) linear infinite; }
+@keyframes click-flash {
+ 0%,37%,42%,57%,62%,77%,82%,100% { fill:#272825; }
+ 39%,40%,59%,60%,79%,80% { fill:#786947; }
+}
+.demo-hand { opacity:0; transform-origin:0 0; animation:hand-click var(--cycle) ease-in-out infinite; }
+@keyframes hand-click {
+ 0%,24% { opacity:0; transform:translate(28px,24px); }
+ 32%,37%,57%,77% { opacity:1; transform:translate(0,0) scale(1); }
+ 39%,59%,79% { opacity:1; transform:translate(0,2px) scale(.88); }
+ 41%,61%,81% { opacity:1; transform:translate(0,0) scale(1); }
+ 48%,53%,68%,73% { opacity:.85; transform:translate(5px,5px); }
+ 90%,100% { opacity:0; transform:translate(28px,24px); }
+}
+.source-folder { animation:source-folder var(--cycle) ease infinite; }
+@keyframes source-folder { 0%,18%,100% { opacity:.25; } 25%,94% { opacity:1; } }
+.rack-ready { animation:rack-reveal var(--cycle) ease infinite; }
+@keyframes rack-reveal { 0%,18%,100% { opacity:0; } 25%,94% { opacity:1; } }
+.import-device { animation:import-device var(--cycle) ease infinite; }
+@keyframes import-device { 0%,18%,100% { opacity:1; } 25%,94% { opacity:0; } }
+.folder-drag { opacity:0; animation:folder-drag var(--cycle) ease-in-out infinite; }
+@keyframes folder-drag {
+ 0%,3% { opacity:1; transform:translate(24px,12px) scale(.86); }
+ 17%,20% { opacity:1; transform:translate(214px,257px) scale(.7); }
+ 25%,90% { opacity:0; transform:translate(214px,257px) scale(.7); }
+ 94% { opacity:0; transform:translate(24px,12px) scale(.86); }
+ 100% { opacity:1; transform:translate(24px,12px) scale(.86); }
+}
+.drop-target { animation:drop-target var(--cycle) ease infinite; }
+@keyframes drop-target {
+ 0%,7%,25%,100% { stroke:#64685c; fill:#30322d; }
+ 14%,20% { stroke:#d4bf6b; fill:#3a3a2c; }
+}
+@media (prefers-reduced-motion:reduce) {
+ * { animation:none !important; }
+ .source-folder,.rack-ready { opacity:1; }
+ .demo-hand,.folder-drag,.import-device { display:none; }
+}
+</style>
+  <ellipse cx="330" cy="298" rx="325" ry="215" fill="url(#halo)" />
+  <g transform="translate(24 12) scale(.86)" class="source-folder">
+    <path d="M0 18Q0 12 6 12H26L36 22H150Q156 22 156 28V110Q156 116 150 116H6Q0 116 0 110Z" fill="#3f372c" stroke="#ba965e" />
+    <text x="15" y="49" font-size="10" fill="#e0be85" letter-spacing="1.3">ONE-SHOTS</text>
+    <rect x="15" y="61" width="6" height="6" rx="1" fill="#678ce4" />
+    <text x="29" y="67" font-size="10" fill="#cfc5b4">Kicks</text>
+    <rect x="15" y="75" width="6" height="6" rx="1" fill="#bf9564" />
+    <text x="29" y="81" font-size="10" fill="#cfc5b4">Snares</text>
+    <rect x="15" y="89" width="6" height="6" rx="1" fill="#e87568" />
+    <text x="29" y="95" font-size="10" fill="#cfc5b4">Hi-hats</text>
+  </g>
+  <g class="sample-collection collection-kick" transform="translate(190 16)">
+    <text x="0" y="12" font-size="10" fill="#678ce4" letter-spacing="1.2">KICKS</text>
+    <g transform="translate(0 22)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-0" width="130" height="23" rx="3" fill="#678ce4" fill-opacity=".18" stroke="#678ce4" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#678ce4" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">kick_01.wav</text>
+      <path d="M78.0 4.0v15.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M80.6 4.4v14.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M83.2 4.8v13.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M85.8 5.2v12.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M88.4 5.6v11.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M91.0 6.0v11.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M93.6 6.4v10.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M96.2 6.8v9.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M98.8 7.2v8.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M101.4 7.6v7.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M104.0 8.0v7.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M106.6 8.4v6.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M109.2 8.8v5.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M111.8 9.2v4.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M114.4 9.6v3.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M117.0 10.0v3.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M119.6 10.4v2.2" stroke="#678ce4" stroke-width="1.2" />
+    </g>
+    <g transform="translate(2 47)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-2" width="130" height="23" rx="3" fill="#678ce4" fill-opacity=".18" stroke="#678ce4" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#678ce4" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">kick_02.wav</text>
+      <path d="M78.0 4.8v13.5" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M80.6 5.1v12.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M83.2 5.5v12.1" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M85.8 5.8v11.3" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M88.4 6.2v10.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M91.0 6.5v9.9" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M93.6 6.9v9.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M96.2 7.3v8.5" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M98.8 7.6v7.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M101.4 8.0v7.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M104.0 8.3v6.3" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M106.6 8.7v5.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M109.2 9.1v4.9" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M111.8 9.4v4.1" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M114.4 9.8v3.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M117.0 10.2v2.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M119.6 10.5v2.0" stroke="#678ce4" stroke-width="1.2" />
+    </g>
+    <g transform="translate(4 72)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-1" width="130" height="23" rx="3" fill="#678ce4" fill-opacity=".18" stroke="#678ce4" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#678ce4" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">kick_03.wav</text>
+      <path d="M78.0 5.5v12.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M80.6 5.8v11.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M83.2 6.1v10.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M85.8 6.5v10.1" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M88.4 6.8v9.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M91.0 7.1v8.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M93.6 7.4v8.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M96.2 7.7v7.5" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M98.8 8.1v6.9" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M101.4 8.4v6.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M104.0 8.7v5.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M106.6 9.0v5.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M109.2 9.3v4.3" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M111.8 9.7v3.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M114.4 10.0v3.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M117.0 10.3v2.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M119.6 10.6v1.8" stroke="#678ce4" stroke-width="1.2" />
+    </g>
+    <g transform="translate(6 97)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-3" width="130" height="23" rx="3" fill="#678ce4" fill-opacity=".18" stroke="#678ce4" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#678ce4" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">kick_04.wav</text>
+      <path d="M78.0 6.2v10.5" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M80.6 6.5v9.9" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M83.2 6.8v9.4" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M85.8 7.1v8.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M88.4 7.4v8.3" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M91.0 7.7v7.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M93.6 7.9v7.1" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M96.2 8.2v6.6" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M98.8 8.5v6.0" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M101.4 8.8v5.5" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M104.0 9.1v4.9" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M106.6 9.3v4.3" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M109.2 9.6v3.8" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M111.8 9.9v3.2" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M114.4 10.2v2.7" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M117.0 10.4v2.1" stroke="#678ce4" stroke-width="1.2" />
+      <path d="M119.6 10.7v1.5" stroke="#678ce4" stroke-width="1.2" />
+    </g>
+    <text x="0" y="139" font-size="9" fill="#9da693">+ more samples</text>
+  </g>
+  <g class="sample-collection collection-snare" transform="translate(344 16)">
+    <text x="0" y="12" font-size="10" fill="#bf9564" letter-spacing="1.2">SNARES</text>
+    <g transform="translate(0 22)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-1" width="130" height="23" rx="3" fill="#bf9564" fill-opacity=".18" stroke="#bf9564" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#bf9564" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">snare_01.wav</text>
+      <path d="M78.0 10.0v3.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M80.6 4.5v14.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M83.2 6.0v11.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M85.8 7.5v8.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M88.4 9.0v5.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M91.0 3.5v16.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M93.6 5.0v13.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M96.2 6.5v10.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M98.8 8.0v7.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M101.4 9.5v4.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M104.0 4.0v15.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M106.6 5.5v12.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M109.2 7.0v9.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M111.8 8.5v6.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M114.4 10.0v3.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M117.0 4.5v14.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M119.6 6.0v11.0" stroke="#bf9564" stroke-width="1.2" />
+    </g>
+    <g transform="translate(2 47)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-0" width="130" height="23" rx="3" fill="#bf9564" fill-opacity=".18" stroke="#bf9564" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#bf9564" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">snare_02.wav</text>
+      <path d="M78.0 7.5v8.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M80.6 9.0v5.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M83.2 3.5v16.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M85.8 5.0v13.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M88.4 6.5v10.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M91.0 8.0v7.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M93.6 9.5v4.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M96.2 4.0v15.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M98.8 5.5v12.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M101.4 7.0v9.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M104.0 8.5v6.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M106.6 10.0v3.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M109.2 4.5v14.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M111.8 6.0v11.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M114.4 7.5v8.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M117.0 9.0v5.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M119.6 3.5v16.0" stroke="#bf9564" stroke-width="1.2" />
+    </g>
+    <g transform="translate(4 72)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-3" width="130" height="23" rx="3" fill="#bf9564" fill-opacity=".18" stroke="#bf9564" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#bf9564" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">snare_03.wav</text>
+      <path d="M78.0 5.0v13.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M80.6 6.5v10.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M83.2 8.0v7.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M85.8 9.5v4.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M88.4 4.0v15.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M91.0 5.5v12.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M93.6 7.0v9.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M96.2 8.5v6.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M98.8 10.0v3.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M101.4 4.5v14.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M104.0 6.0v11.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M106.6 7.5v8.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M109.2 9.0v5.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M111.8 3.5v16.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M114.4 5.0v13.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M117.0 6.5v10.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M119.6 8.0v7.0" stroke="#bf9564" stroke-width="1.2" />
+    </g>
+    <g transform="translate(6 97)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-2" width="130" height="23" rx="3" fill="#bf9564" fill-opacity=".18" stroke="#bf9564" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#bf9564" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">snare_04.wav</text>
+      <path d="M78.0 9.5v4.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M80.6 4.0v15.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M83.2 5.5v12.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M85.8 7.0v9.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M88.4 8.5v6.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M91.0 10.0v3.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M93.6 4.5v14.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M96.2 6.0v11.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M98.8 7.5v8.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M101.4 9.0v5.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M104.0 3.5v16.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M106.6 5.0v13.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M109.2 6.5v10.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M111.8 8.0v7.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M114.4 9.5v4.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M117.0 4.0v15.0" stroke="#bf9564" stroke-width="1.2" />
+      <path d="M119.6 5.5v12.0" stroke="#bf9564" stroke-width="1.2" />
+    </g>
+    <text x="0" y="139" font-size="9" fill="#9da693">+ more samples</text>
+  </g>
+  <g class="sample-collection collection-hat" transform="translate(498 16)">
+    <text x="0" y="12" font-size="10" fill="#e87568" letter-spacing="1.2">HI-HATS</text>
+    <g transform="translate(0 22)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-2" width="130" height="23" rx="3" fill="#e87568" fill-opacity=".18" stroke="#e87568" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#e87568" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">hat_01.wav</text>
+      <path d="M78.0 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M80.6 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M83.2 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M85.8 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M88.4 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M91.0 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M93.6 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M96.2 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M98.8 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M101.4 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M104.0 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M106.6 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M109.2 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M111.8 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M114.4 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M117.0 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M119.6 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+    </g>
+    <g transform="translate(2 47)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-3" width="130" height="23" rx="3" fill="#e87568" fill-opacity=".18" stroke="#e87568" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#e87568" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">hat_02.wav</text>
+      <path d="M78.0 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M80.6 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M83.2 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M85.8 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M88.4 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M91.0 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M93.6 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M96.2 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M98.8 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M101.4 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M104.0 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M106.6 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M109.2 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M111.8 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M114.4 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M117.0 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M119.6 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+    </g>
+    <g transform="translate(4 72)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-0" width="130" height="23" rx="3" fill="#e87568" fill-opacity=".18" stroke="#e87568" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#e87568" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">hat_03.wav</text>
+      <path d="M78.0 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M80.6 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M83.2 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M85.8 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M88.4 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M91.0 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M93.6 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M96.2 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M98.8 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M101.4 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M104.0 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M106.6 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M109.2 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M111.8 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M114.4 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M117.0 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M119.6 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+    </g>
+    <g transform="translate(6 97)">
+      <rect width="130" height="23" rx="3" fill="#2c3029" stroke="#505747" />
+      <rect class="state state-1" width="130" height="23" rx="3" fill="#e87568" fill-opacity=".18" stroke="#e87568" stroke-width="1.6" />
+      <rect x="0" y="3" width="2" height="17" fill="#e87568" rx="1" />
+      <text x="8" y="15" font-size="8" fill="#d4d8cb">hat_04.wav</text>
+      <path d="M78.0 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M80.6 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M83.2 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M85.8 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M88.4 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M91.0 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M93.6 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M96.2 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M98.8 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M101.4 10.5v2.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M104.0 7.0v9.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M106.6 7.5v8.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M109.2 8.0v7.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M111.8 8.5v6.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M114.4 9.0v5.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M117.0 9.5v4.0" stroke="#e87568" stroke-width="1.2" />
+      <path d="M119.6 10.0v3.0" stroke="#e87568" stroke-width="1.2" />
+    </g>
+    <text x="0" y="139" font-size="9" fill="#9da693">+ more samples</text>
+  </g>
+  <path d="M164 70h16" stroke="#8b826b" stroke-width="1.5" stroke-dasharray="3 4" fill="none" />
+  <g filter="url(#shadow)" class="rack-ready">
+    <g transform="translate(23 178) scale(1.2)">
+      <rect width="512" height="248" rx="10" fill="#343532" stroke="#66675f" />
+      <path d="M10 0H502Q512 0 512 10V30H0V10Q0 0 10 0" fill="#444642" />
+      <circle cx="16" cy="15" r="5" fill="#ffb35c" />
+      <text x="29" y="20" font-size="12" fill="#deded8" font-weight="600">One-shots / Drum Rack</text>
+      <rect x="400" y="6" width="46" height="19" rx="9" fill="#272825" stroke="#77786d" class="rand-button" />
+      <text x="410" y="20" font-size="11" fill="#deded8">Rand</text>
+      <rect x="12" y="42" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="12" y="42" width="72" height="23" rx="2" fill="#678ce4" />
+      <text x="48" y="58" font-size="10" fill="#202421" text-anchor="middle" font-weight="600">Kick Select</text>
+      <circle cx="48" cy="91" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M35 101 A16 16 0 1 1 61 101" fill="none" stroke="#678ce4" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-0" style="transform-origin:48px 91px">
+        <path d="M48 91l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <rect x="91" y="42" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="91" y="42" width="72" height="23" rx="2" fill="#bf9564" />
+      <text x="127" y="58" font-size="10" fill="#202421" text-anchor="middle" font-weight="600">Snare Select</text>
+      <circle cx="127" cy="91" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M114 101 A16 16 0 1 1 140 101" fill="none" stroke="#bf9564" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-1" style="transform-origin:127px 91px">
+        <path d="M127 91l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <rect x="170" y="42" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="170" y="42" width="72" height="23" rx="2" fill="#eee466" />
+      <text x="206" y="58" font-size="11" fill="#202421" text-anchor="middle" font-weight="600">Clap</text>
+      <circle cx="206" cy="91" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M193 101 A16 16 0 1 1 219 101" fill="none" stroke="#eee466" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-2">
+        <path d="M206 91l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <text x="206" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle">12</text>
+      <rect x="12" y="139" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="12" y="139" width="72" height="23" rx="2" fill="#e87568" />
+      <text x="48" y="155" font-size="10" fill="#202421" text-anchor="middle" font-weight="600">Hi-hat Select</text>
+      <circle cx="48" cy="188" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M35 198 A16 16 0 1 1 61 198" fill="none" stroke="#e87568" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-3" style="transform-origin:48px 188px">
+        <path d="M48 188l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <rect x="91" y="139" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="91" y="139" width="72" height="23" rx="2" fill="#c0c36b" />
+      <text x="127" y="155" font-size="11" fill="#202421" text-anchor="middle" font-weight="600">Crash</text>
+      <circle cx="127" cy="188" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M114 198 A16 16 0 1 1 140 198" fill="none" stroke="#c0c36b" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-4">
+        <path d="M127 188l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <text x="127" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle">05</text>
+      <rect x="170" y="139" width="72" height="89" rx="3" fill="#292b28" stroke="#191b18" />
+      <rect x="170" y="139" width="72" height="23" rx="2" fill="#bbebcd" />
+      <text x="206" y="155" font-size="11" fill="#202421" text-anchor="middle" font-weight="600">Shaker</text>
+      <circle cx="206" cy="188" r="16" fill="none" stroke="#53574e" stroke-width="3" />
+      <path d="M193 198 A16 16 0 1 1 219 198" fill="none" stroke="#bbebcd" stroke-width="3" stroke-linecap="round" />
+      <g class="knob knob-5">
+        <path d="M206 188l-10 -8" stroke="#dadbd3" stroke-width="2" stroke-linecap="round" />
+      </g>
+      <text x="206" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle">19</text>
+      <rect x="263" y="42" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-0" x="264" y="43" width="51" height="39" rx="2" fill="#60645a" opacity=".3" />
+      <text x="289.5" y="67" font-size="9" fill="#e0e4da" text-anchor="middle">Crash</text>
+      <rect x="322" y="42" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="381" y="42" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="440" y="42" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-3" x="441" y="43" width="51" height="39" rx="2" fill="#60645a" opacity=".3" />
+      <text x="466.5" y="67" font-size="9" fill="#e0e4da" text-anchor="middle">FX</text>
+      <rect x="263" y="89" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-4" x="264" y="90" width="51" height="39" rx="2" fill="#e87568" opacity=".3" />
+      <text x="289.5" y="114" font-size="9" fill="#e0e4da" text-anchor="middle">Hi-hat</text>
+      <rect x="322" y="89" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="381" y="89" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="440" y="89" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="263" y="136" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-8" x="264" y="137" width="51" height="39" rx="2" fill="#bbebcd" opacity=".3" />
+      <text x="289.5" y="161" font-size="9" fill="#e0e4da" text-anchor="middle">Shaker</text>
+      <rect x="322" y="136" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="381" y="136" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="440" y="136" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-11" x="441" y="137" width="51" height="39" rx="2" fill="#60645a" opacity=".3" />
+      <text x="466.5" y="161" font-size="9" fill="#e0e4da" text-anchor="middle">Perc</text>
+      <rect x="263" y="183" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-12" x="264" y="184" width="51" height="39" rx="2" fill="#678ce4" opacity=".3" />
+      <text x="289.5" y="208" font-size="9" fill="#e0e4da" text-anchor="middle">Kick</text>
+      <rect x="322" y="183" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect x="381" y="183" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-14" x="382" y="184" width="51" height="39" rx="2" fill="#bf9564" opacity=".3" />
+      <text x="407.5" y="208" font-size="9" fill="#e0e4da" text-anchor="middle">Snare</text>
+      <rect x="440" y="183" width="53" height="41" rx="3" fill="#282b27" stroke="#1c1e1a" />
+      <rect class="pad pad-15" x="441" y="184" width="51" height="39" rx="2" fill="#eee466" opacity=".3" />
+      <text x="466.5" y="208" font-size="9" fill="#e0e4da" text-anchor="middle">Clap</text>
+      <text x="48" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-0">01</text>
+      <text x="48" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-1">03</text>
+      <text x="48" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-2">02</text>
+      <text x="48" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-3">04</text>
+      <text x="127" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-0">02</text>
+      <text x="127" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-1">01</text>
+      <text x="127" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-2">04</text>
+      <text x="127" y="122" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-3">03</text>
+      <text x="48" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-0">03</text>
+      <text x="48" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-1">04</text>
+      <text x="48" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-2">01</text>
+      <text x="48" y="219" font-size="11" fill="#c4c7bd" text-anchor="middle" class="state state-3">02</text>
+    </g>
+  </g>
+  <g transform="translate(534 196)" aria-hidden="true">
+    <g class="demo-hand">
+      <path d="M0 15V1C0-3 6-3 6 1V10C6 6 12 6 12 10V12C12 8 18 8 18 12V15C18 11 24 12 24 16V28C24 35 20 39 13 39H9C4 39 1 36-2 32L-9 22C-12 17-7 14-4 17L0 21Z" fill="#eceee5" stroke="#20231e" stroke-width="2" stroke-linejoin="round" />
+    </g>
+  </g>
+  <g class="import-device" transform="translate(23 178)" aria-hidden="true">
+    <rect width="614" height="298" rx="10" fill="#292b28" stroke="#66675f" />
+    <path d="M10 0H604Q614 0 614 10V32H0V10Q0 0 10 0" fill="#596d72" />
+    <circle cx="17" cy="16" r="6" fill="#ffb35c" />
+    <text x="32" y="22" font-size="14" font-weight="600" fill="#161e20">Pack 2 Rack</text>
+    <rect class="drop-target" x="35" y="77" width="355" height="147" rx="4" stroke="#64685c" stroke-width="2" fill="#30322d" />
+    <path d="M64 119h17l7 8h35v37H64Z" fill="none" stroke="#ffb35c" stroke-width="4" />
+    <text x="145" y="135" font-size="17" fill="#eee">Drop sample folder here</text>
+    <text x="145" y="160" font-size="12" fill="#a9afa4">or click to browse</text>
+    <rect x="430" y="104" width="16" height="16" fill="#ffb35c" />
+    <text x="457" y="117" font-size="14" fill="#d6d9d0">Copy samples</text>
+    <rect x="430" y="149" width="16" height="16" fill="#20221f" stroke="#171914" />
+    <text x="457" y="162" font-size="14" fill="#d6d9d0">Sequential pads</text>
+  </g>
+  <g class="folder-drag" aria-hidden="true">
+    <path d="M0 18Q0 12 6 12H26L36 22H150Q156 22 156 28V110Q156 116 150 116H6Q0 116 0 110Z" fill="#3f372c" stroke="#ba965e" />
+    <text x="15" y="49" font-size="10" fill="#e0be85" letter-spacing="1.3">ONE-SHOTS</text>
+    <rect x="15" y="61" width="6" height="6" rx="1" fill="#678ce4" />
+    <text x="29" y="67" font-size="10" fill="#cfc5b4">Kicks</text>
+    <rect x="15" y="75" width="6" height="6" rx="1" fill="#bf9564" />
+    <text x="29" y="81" font-size="10" fill="#cfc5b4">Snares</text>
+    <rect x="15" y="89" width="6" height="6" rx="1" fill="#e87568" />
+    <text x="29" y="95" font-size="10" fill="#cfc5b4">Hi-hats</text>
+    <g transform="translate(98 60) scale(.85)">
+      <path d="M0 15V1C0-3 6-3 6 1V10C6 6 12 6 12 10V12C12 8 18 8 18 12V15C18 11 24 12 24 16V28C24 35 20 39 13 39H9C4 39 1 36-2 32L-9 22C-12 17-7 14-4 17L0 21Z" fill="#eceee5" stroke="#20231e" stroke-width="2" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>
