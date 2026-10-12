@@ -12,7 +12,7 @@
 
 * { box-sizing: border-box; }
 body { margin: 0; -webkit-font-smoothing: antialiased; }
-.wrap { width: min(100% - 64px, 1000px); margin-inline: auto; }
+.wrap { width: min(100% - 64px, 1280px); margin-inline: auto; }
 a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
 .site-header { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 24px; background: var(--background); box-shadow: 0 0 0 100vmax var(--background); clip-path: inset(0 -100vmax); }
