@@ -2,6 +2,15 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert'),path=require('path');
 const p=JSON.parse(fs.readFileSync(path.join(__dirname,'../dist/Pack 2 Rack.amxd')).subarray(32).toString().replace(/\0$/,'')).patcher;
 const code=p.boxes.find(x=>x.box.id==='livejs').box.code;
+// Manual loading must keep the actual filename and never start Live API polling.
+{
+ const messages=[];
+ const ctx=vm.createContext({LiveAPI:()=>{throw Error('Manual loading must not inspect Live');},Task:()=>{throw Error('Manual loading must not schedule polling');},outlet:(...m)=>messages.push(m)});
+ vm.runInContext(code,ctx);
+ ctx.built('E:\\Custom Library\\Kit\\Kit.adg','Kit',3,0);
+ assert.equal(messages.length,1);
+ assert(messages[0][2].includes('E:\\Custom Library\\Kit\\Kit.adg'));
+}
 for(const start of [4,3,5]){
  let count=start,calls=[],messages=[],scheduled;
  const device={get:key=>key==='class_name'?['DrumGroupDevice']:key==='view'?['id',3]:key==='visible_macro_count'?[count]:key==='visible_drum_pads'?Array.from({length:16},(_,i)=>['id',i]).flat():[],call:m=>{calls.push(m);count+=m==='add_macro'?1:-1;}};

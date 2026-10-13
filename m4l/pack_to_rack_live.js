@@ -8,10 +8,14 @@ var previousTracks = [];
 var expectedName = "";
 var attempts = 0;
 var expectedPads = 0;
+var savedFile = "";
+function saved(message){ui(message+" Drag this preset into Live: "+savedFile);}
 function ui(s){outlet(1,'status',s);}
-function built(file,name,padCount){
+function built(file,name,padCount,autoLoad){
  try{
   if(loadTask){loadTask.cancel();loadTask=null;}
+  savedFile=String(file);
+  if(Number(autoLoad)===0){saved("Rack saved.");return;}
   var song=new LiveAPI('live_set');
   var ids=song.get('tracks');
   previousTracks=[];
@@ -23,7 +27,7 @@ function built(file,name,padCount){
   // Opening an ADG creates its own MIDI track. Do not pre-create an empty one.
   outlet(0,'load',file);
   loadTask=new Task(checkloaded,this);loadTask.schedule(400);
- }catch(e){ui('Rack saved. Automatic loading unavailable: '+e.message);}
+ }catch(e){saved('Rack saved. Automatic loading unavailable: '+e.message);}
 }
 function checkloaded(){
  try{
@@ -47,7 +51,7 @@ function checkloaded(){
    }
    if(!ownedTrack){
     if(++attempts<20){loadTask.schedule(250);return;}
-    ui('Rack saved. Load it from User Library → Drum Rack → Pack to Rack.');return;
+    saved('Rack saved.');return;
    }
   }
   var track=new LiveAPI('id '+ownedTrack);var ids=track.get('devices');
@@ -78,6 +82,6 @@ function checkloaded(){
    }
   }
   if(++attempts<20){loadTask.schedule(250);return;}
-  ui('Rack saved. Load it from User Library → Drum Rack → Pack to Rack.');
- }catch(e){ui('Rack saved; loading could not be verified. Use its User Library preset.');}
+  saved('Rack saved.');
+ }catch(e){saved('Rack saved; loading could not be verified.');}
 }

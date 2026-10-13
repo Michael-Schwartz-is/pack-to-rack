@@ -25,7 +25,7 @@ for b in boxes.values():
 boxes['title'].update(presentation=0)
 boxes['subtitle'].update(presentation=0)
 boxes['folderlabel'].update(presentation=0)
-boxes['statuslabel'].update(text='',fontsize=10,presentation_rect=[112,138,296,20],textcolor=[.68,.68,.68,1])
+boxes['statuslabel'].update(varname='statuslabel',text='',fontsize=10,presentation_rect=[112,138,296,20],textcolor=[.68,.68,.68,1])
 boxes['choose'].update(hidden=1)
 boxes['choose'].update(activebgcolor=[.25,.25,.25,1],activebgoncolor=[.34,.34,.34,1],activetextcolor=[.68,.68,.68,1],activetextoncolor=[.86,.86,.86,1],rounded=.05,bordercolor=[.39,.39,.39,1],text='Browse…',texton='Browse…',fontsize=10,textjustification=1,presentation_rect=[12,136,92,20],bgcolor=[.25,.25,.25,1],bgoncolor=[.24,.24,.24,1],textcolor=[.68,.68,.68,1])
 boxes['build'].update(text='Build Rack',texton='Build Rack',activebgcolor=[1,.65,.32,0],activebgoncolor=[1,.75,.48,.12],activetextcolor=[.12,.12,.12,1],activetextoncolor=[.12,.12,.12,1],bordercolor=[0,0,0,0],focusbordercolor=[0,0,0,0],rounded=0,presentation=1,hidden=1,presentation_rect=ACTION_RECT,fontsize=14,bgcolor=[1,.65,.32,0],bgoncolor=[1,.75,.48,.12],textcolor=[.12,.12,.12,1],textoncolor=[.12,.12,.12,1])

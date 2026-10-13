@@ -8,6 +8,10 @@ Requirements: Max for Live, Sampler, and Max **9.1+**. Tested on Live 12.4.2 Sui
 
 Exports are saved in User Library/Presets/Instruments/Drum Rack/Pack to Rack. The source pack is never modified. **Copy samples** copies audio beside the exported rack; reference mode uses the original files. As before, exported racks use absolute sample paths: after moving an export, locate its Samples folder in Live and resave, or Collect All and Save the Live project.
 
+The device reads the User Library location from the most recently saved readable Live 12 `Library.cfg`. Without readable settings, it uses `Documents/Ableton/User Library` on Windows and `Music/Ableton/User Library` on macOS. Windows drive letters and network paths are preserved. On Windows, drag the saved `.adg` into Live manually. The status message gives its exact path; hover over the status line or open Max's Console to see the full saved path. Each preset is inside a folder named after the rack under `Presets/Instruments/Drum Rack/Pack to Rack`.
+
+With an older device on Windows, already generated racks may be under `%USERPROFILE%/Music/Ableton/User Library/Presets/Instruments/Drum Rack/Pack to Rack`. Move the entire rack folder, including `Samples`, into your actual User Library, then locate the copied samples in Live and resave. Reload the updated AMXD for future exports.
+
 The automatic loader targets Ableton Live 12 Suite on macOS. If opening fails, load the saved preset from Live's User Library. Input classification uses folder names and filenames; unknown files are retained as Other, and explicitly named loops are skipped. This compact device shows counts but does not offer per-file category editing.
 
 Verification: loaded from a folder with only the AMXD; generated and loaded a real 127-sample rack with seven pads. Embedded-code tests pass for the example kit, banks, selector coverage, note encoding, escaped filenames, sample copying, overwrite protection and invalid input, while disallowing Python and sidecar loading.

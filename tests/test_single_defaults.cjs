@@ -52,6 +52,6 @@ try{
  for(const inner of run("all(r,'InstrumentGroupDevice')")){ctx.inner=inner;assert.equal(run("find(inner,'ChainSelector/KeyMidi/NoteOrController').attrs.Value"),'8');}
 
  const outer=run("find(r,'GroupDevicePreset/Device/DrumGroupDevice')");assert.equal(outer.children.find(x=>x.tag==='MacroDisplayNames.1').attrs.Value,'Macro 2');
- assert(p.boxes.some(x=>x.box.id==='sequential'&&x.box.maxclass==='live.toggle'));
+ assert(p.boxes.some(x=>x.box.id==='sequential'&&x.box.maxclass==='live.text'&&x.box.mode===1&&x.box.parameter_enable===1));
  console.log('Wrapped pad controls and updated defaults passed: 4/12 pads, sequential/fixed MIDI maps, -12 dB Sampler + 0 dB layers, one outer selector per pad including banked categories.');
 }finally{fs.rmSync(home,{recursive:true,force:true});}

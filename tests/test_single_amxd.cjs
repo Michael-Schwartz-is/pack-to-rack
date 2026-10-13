@@ -7,7 +7,7 @@ assert.deepEqual(patch.dependency_cache,[]);
 const code=patch.boxes.find(x=>x.box.id==='worker').box.code;
 assert(!/python|rack\.py|node_modules|require\(['"]\./i.test(code),'External runtime dependency found');
 const home=fs.mkdtempSync(path.join(os.tmpdir(),'rack-single-')),events=[],handlers={};
-const fakeMax={addHandler:(k,f)=>handlers[k]=f,outlet:(...a)=>events.push(a)};
+const fakeMax={post:()=>{},addHandler:(k,f)=>handlers[k]=f,outlet:(...a)=>events.push(a)};
 const context=vm.createContext({require:n=>n==='max-api'?fakeMax:n==='os'?{homedir:()=>home}:n==='child_process'?{execFile:()=>{throw Error('No external process allowed in this test');}}:require(n),Buffer,process,setImmediate,console});
 vm.runInContext(code,context);
 function run(s){return vm.runInContext(s,context);}
