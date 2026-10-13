@@ -1,6 +1,6 @@
 """Embed converter code, Live API code and templates in one AMXD; no runtime files."""
 from pathlib import Path
-import json,struct,gzip,base64
+import json,struct,gzip,base64,re
 BASE=Path(__file__).resolve().parents[1]
 VERSION=(BASE/'VERSION').read_text().strip()
 source=BASE/'m4l/Pack to Rack/Pack to Rack.amxd'
@@ -82,5 +82,12 @@ p['project']['contents']={'patchers':{}}
 p['project']['searchpath']={}
 p['project']['autoorganize']=0
 raw=(json.dumps({'patcher':p},indent=2,ensure_ascii=False)+'\n').encode()+b'\0'
-out=BASE/'dist/Pack 2 Rack.amxd';out.parent.mkdir(exist_ok=True);out.write_bytes(stock[:28]+struct.pack('<I',len(raw))+raw)
+device=stock[:28]+struct.pack('<I',len(raw))+raw
+out=BASE/'dist/Pack 2 Rack.amxd';out.parent.mkdir(exist_ok=True);out.write_bytes(device)
+download=BASE/'website/downloads/Pack 2 Rack.amxd'
+download.parent.mkdir(exist_ok=True);download.write_bytes(device)
+index=BASE/'website/index.html'
+html,count=re.subn(r'(<span id="download-version">)[^<]*(</span>)',lambda m:m[1]+'v'+VERSION+m[2],index.read_text())
+if count!=1:raise ValueError('Website download version marker missing or duplicated')
+index.write_text(html)
 print(out, len(out.read_bytes()),'bytes; external dependency count:',len(p['dependency_cache']))

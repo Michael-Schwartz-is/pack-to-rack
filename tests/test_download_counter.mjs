@@ -31,7 +31,10 @@ function fixture({ method = 'GET', status = 200, headers = {}, requestUrl = url,
 
 test('records one successful production request, returning the original file', async () => {
   const f = fixture();
-  assert.equal(await onRequest(f.context), f.response);
+  const response = await onRequest(f.context);
+  assert.equal(response.status, f.response.status);
+  assert.equal(await response.text(), 'device bytes');
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
   await Promise.all(f.background);
   assert.equal(f.writes.length, 1);
   assert.match(f.writes[0].sql, /ON CONFLICT/);
@@ -49,7 +52,9 @@ for (const [name, options] of [
 ]) {
   test(`does not count ${name}`, async () => {
     const f = fixture(options);
-    assert.equal(await onRequest(f.context), f.response);
+    const response = await onRequest(f.context);
+    assert.equal(response.status, f.response.status);
+    assert.equal(await response.text(), 'device bytes');
     assert.equal(f.background.length, 0);
     assert.equal(f.writes.length, 0);
   });
@@ -58,7 +63,9 @@ for (const [name, options] of [
 for (const failure of ['prepare', 'run']) {
   test(`a database ${failure} failure does not break the download`, async () => {
     const f = fixture({ failure });
-    assert.equal(await onRequest(f.context), f.response);
+    const response = await onRequest(f.context);
+    assert.equal(response.status, f.response.status);
+    assert.equal(await response.text(), 'device bytes');
     await assert.doesNotReject(Promise.all(f.background));
     assert.equal(f.writes.length, 0);
   });

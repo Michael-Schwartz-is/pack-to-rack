@@ -11,9 +11,15 @@ async function recordDownload(database, day) {
 }
 
 export async function onRequest(context) {
-  const response = await context.next();
+  let response = await context.next();
   const { request, env } = context;
   const url = new URL(request.url);
+
+  // This URL always serves the latest device; do not retain an earlier build.
+  if (response.status === 200 && url.pathname === `/downloads/${encodeURIComponent(FILE)}`) {
+    response = new Response(response.body, response);
+    response.headers.set('Cache-Control', 'no-store');
+  }
 
   // Count whole-file requests only. HEAD, resumed ranges and previews don't
   // inflate the counter. This measures files served, not unique people.

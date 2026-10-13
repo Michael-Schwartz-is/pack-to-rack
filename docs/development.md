@@ -20,6 +20,8 @@ node tests/test_single_live_loader.cjs
 
 The earlier Python-backed package is retained under `m4l/Pack to Rack` as development history. The standalone AMXD does not use it. If an older instance is already loaded in a Set, load Pack 2 Rack to use this version.
 
+Run `python3 scripts/build_single_amxd.py` before publishing device changes. It writes identical AMXDs to `dist/` and `website/downloads/` and updates the website's version label from `VERSION`. The embedded-device test rejects a stale website copy. Cloudflare serves `website/`, so updating only `dist/` does not update the website download.
+
 Windows path and export regressions: the embedded worker preserves drive roots (`E:/…`, `C:\…`) and UNC paths instead of interpreting drive letters as macOS volume prefixes. Exports follow the User Library in the most recently written readable Live 12 `Library.cfg`, with platform defaults if settings are unavailable. Manual-load messages retain the actual `.adg` path, also available in the status tooltip and Max Console. Windows tests simulate Windows path semantics and settings on macOS; an end-to-end Windows Live run is still required.
 
 ## Device workflow

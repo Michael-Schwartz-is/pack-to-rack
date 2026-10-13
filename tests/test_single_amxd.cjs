@@ -1,6 +1,8 @@
 // Run the actual code stored inside the deliverable, without sidecar files or Python.
 const fs=require('fs'),path=require('path'),os=require('os'),vm=require('vm'),assert=require('assert'),zlib=require('zlib');
 const root=path.resolve(__dirname,'..'),raw=fs.readFileSync(path.join(root,'dist','Pack 2 Rack.amxd'));
+assert(raw.equals(fs.readFileSync(path.join(root,'website/downloads/Pack 2 Rack.amxd'))),'Website download differs from the tested AMXD');
+assert(fs.readFileSync(path.join(root,'website/index.html'),'utf8').includes('<span id="download-version">v'+fs.readFileSync(path.join(root,'VERSION'),'utf8').trim()+'</span>'),'Website download version is stale');
 assert.equal(raw.readUInt32LE(28),raw.length-32);
 const patch=JSON.parse(raw.subarray(32).toString().replace(/\0$/,'')).patcher;
 assert.deepEqual(patch.dependency_cache,[]);
