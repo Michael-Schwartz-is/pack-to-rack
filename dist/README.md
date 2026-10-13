@@ -1,5 +1,7 @@
 # Pack to Rack — one-file device
 
+Version **0.1**. The device displays its version on startup. The Git tag `v0.1` identifies this release's source and AMXD.
+
 **Pack 2 Rack.amxd** is the complete device. Copy that single file anywhere, or drag it into Live's User Library. No accompanying files or Python installation are needed.
 
 Load it onto a MIDI track. Drop a sample folder into the large field, or click the drop field. After scanning, the field becomes **Build Rack**. **Change folder…** picks another pack. The converter exports a native Drum Rack with one pad per detected drum type and Sample Select macros, and opens it on a new MIDI track. Above 128 sounds per type, use the Bank and Select controls. You may remove the builder after creating the rack.

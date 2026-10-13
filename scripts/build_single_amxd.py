@@ -2,13 +2,14 @@
 from pathlib import Path
 import json,struct,gzip,base64
 BASE=Path(__file__).resolve().parents[1]
+VERSION=(BASE/'VERSION').read_text().strip()
 source=BASE/'m4l/Pack to Rack/Pack to Rack.amxd'
 stock=source.read_bytes();p=json.loads(stock[32:].rstrip(b'\0'))['patcher']
 templates={}
 for key,name in [('drum','drum-rack.adg'),('instrument','instrument-rack.adg')]:templates[key]=base64.b64encode((BASE/'templates'/name).read_bytes()).decode()
 templates['sample']=base64.b64encode(gzip.compress((BASE/'templates/sample-part.xml').read_bytes(),mtime=0)).decode()
 license=(BASE/'templates/LICENSE').read_text()
-code='/* Bundled Ableton templates: '+license.replace('*/','* /')+' */\nconst TEMPLATES='+json.dumps(templates)+';\n'+(BASE/'m4l/native/engine.cjs').read_text()+'\n'+(BASE/'m4l/native/worker.cjs').read_text()
+code='/* Bundled Ableton templates: '+license.replace('*/','* /')+' */\nconst VERSION='+json.dumps(VERSION)+';\nconst TEMPLATES='+json.dumps(templates)+';\n'+(BASE/'m4l/native/engine.cjs').read_text()+'\n'+(BASE/'m4l/native/worker.cjs').read_text()
 for wrapped in p['boxes']:
  b=wrapped['box']
  if b['id']=='worker':
@@ -20,6 +21,7 @@ for wrapped in p['boxes']:
 ACTION_RECT=[12,48,240,64]
 p.update(devicewidth=420,openrect=[0,0,420,169],bgcolor=[.16,.16,.16,1])
 boxes={x['box']['id']:x['box'] for x in p['boxes']}
+boxes['worker']['annotation']='Pack to Rack v'+VERSION
 for b in boxes.values():
  if b.get('maxclass')=='comment': b.update(fontname='Arial',textcolor=[.86,.86,.86,1],ignoreclick=1)
 boxes['title'].update(presentation=0)

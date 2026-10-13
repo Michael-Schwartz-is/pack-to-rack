@@ -1,5 +1,7 @@
 # Pack to Rack
 
+Current version: **0.1**. See the [changelog](CHANGELOG.md).
+
 [Website](https://p2r.gushon.com)
 
 ## Make exploring sample packs easier—and a lot more fun.

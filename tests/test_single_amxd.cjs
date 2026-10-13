@@ -11,6 +11,8 @@ const fakeMax={post:()=>{},addHandler:(k,f)=>handlers[k]=f,outlet:(...a)=>events
 const context=vm.createContext({require:n=>n==='max-api'?fakeMax:n==='os'?{homedir:()=>home}:n==='child_process'?{execFile:()=>{throw Error('No external process allowed in this test');}}:require(n),Buffer,process,setImmediate,console});
 vm.runInContext(code,context);
 function run(s){return vm.runInContext(s,context);}
+assert.equal(run('VERSION'),fs.readFileSync(path.join(root,'VERSION'),'utf8').trim());
+assert(events.some(e=>e[0]==='status'&&e[1].startsWith('v'+run('VERSION')+' ·')));
 (async()=>{
  try{
   await handlers.folder(path.join(root,'examples','Demo Pack'));await handlers.build();

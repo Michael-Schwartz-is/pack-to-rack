@@ -75,4 +75,4 @@ max.addHandler('verified_macros',(wanted,visible,gridCount)=>{
  if(!latest)return;
  try{const file=path.join(path.dirname(latest),'manifest.json'),m=JSON.parse(fs.readFileSync(file,'utf8'));m.live_requested_macro_count=Number(wanted);m.live_visible_macro_count=Number(visible);if(gridCount!==undefined)m.live_visible_pad_count=Number(gridCount);fs.writeFileSync(file,JSON.stringify(m,null,2)+'\n');}catch(e){max.post('Macro verification could not be recorded: '+e.message);}
 });
-readyField(false);status('');
+readyField(false);status('v'+VERSION+' · Choose a sample folder.');
