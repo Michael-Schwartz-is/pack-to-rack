@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3 — 2026-10-14
+
+- Restore Sequential pads. On: consecutive notes from C1. Off: familiar positions for exact folder names such as Kicks and Snares, with unused pads for every other folder.
+- Keep all folder names and contents intact in both layouts. Folders sharing a preferred note get separate unused pads; no sample classification or folder merging occurs.
+
 ## 0.2 — 2026-10-14
 
 - Choose a save destination with Browse or type a full folder path, on any drive.

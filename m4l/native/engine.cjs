@@ -127,6 +127,32 @@ function validate(rack,count){
  for(const sampler of all(rack,'MultiSampler')){const parts=find(sampler,'Player/MultiSampleMap/SampleParts').children;actual+=parts.length;const coverage=Array(128).fill(0);for(const p of parts){for(let n=Number(find(p,'SelectorRange/Min').attrs.Value);n<=Number(find(p,'SelectorRange/Max').attrs.Value);n++)coverage[n]++;if(!fs.statSync(find(p,'SampleRef/FileRef/Path').attrs.Value).isFile())throw Error('Missing sample');}if(coverage.some(n=>n!==1))throw Error('Selector gaps or overlaps');}
  if(actual!==count)throw Error('Output sample count mismatch');
 }
+// Folder names can suggest pad positions; they never change grouping or content.
+function fixedFolderNote(label){
+ const key=label.toLowerCase().replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim();
+ const names={
+  'kick':36,'kicks':36,'bass drum':36,'bass drums':36,
+  'snare':38,'snares':38,'clap':39,'claps':39,'rim':37,'rims':37,'rimshots':37,
+  'closed hat':42,'closed hats':42,'closed hi hats':42,
+  'open hat':46,'open hats':46,'open hi hats':46,
+  'hat':44,'hats':44,'hi hat':44,'hi hats':44,'hihat':44,'hihats':44,
+  'tom':45,'toms':45,'crash':49,'crashes':49,'ride':51,'rides':51,
+  'cymbal':50,'cymbals':50,'shaker':40,'shakers':40,
+  'tambourine':41,'tambourines':41,'perc':43,'percussion':43,
+  'fx':47,'foley':47,'effects':47
+ };
+ return names[key];
+}
+function groupNotes(groups,types,layout){
+ const notes={},used=new Set(),pending=[];
+ for(const [i,cat]of Object.keys(groups).entries()){
+  const preferred=layout==='sequential'?36+i:cat.startsWith('folder:')?fixedFolderNote(types[cat][0]):types[cat][1];
+  if(preferred===undefined||used.has(preferred)){pending.push(cat);continue;}
+  notes[cat]=preferred;used.add(preferred);
+ }
+ for(const cat of pending){let note=36;while(used.has(note))note++;notes[cat]=note;used.add(note);}
+ return notes;
+}
 function build(plan,outputDir,assignments={},copySamples=true,givenName,options={}){
  const layout=options.layout||'fixed';if(!['fixed','sequential'].includes(layout))throw Error('Unknown pad layout: '+layout);
  const root=fs.realpathSync(plan.folder),name=(givenName||plan.name).replace(/[/:\\\x00-\x1f]/g,'-').replace(/^[ .]+|[ .]+$/g,'')||'Sample Pack',output=path.resolve(outputDir),groups={};
@@ -138,11 +164,12 @@ function build(plan,outputDir,assignments={},copySamples=true,givenName,options=
  if(!Object.keys(groups).length)throw Error('No samples selected.');if(Object.keys(groups).length>16)throw Error('More than 16 sound groups; choose a smaller folder.');fs.mkdirSync(output,{recursive:true});const stage=fs.mkdtempSync(path.join(output,'.rack-build-'));let target=path.join(output,name),suffix=2;while(fs.existsSync(target))target=path.join(output,name+' '+suffix++);
  const rack=loadTemplate('drum'),preset=find(rack,'GroupDevicePreset'),bp=find(preset,'BranchPresets'),donor=clone(bp.children[0]),device=find(preset,'Device/DrumGroupDevice');bp.children=[];clearMaps(rack);
  const names=Object.keys(groups).map(k=>types[k][0]);
+ const notes=groupNotes(groups,types,layout);
  resetMacros(device,names);put(device,'UserName',name);put(device,'PadScrollPosition',19);put(device,'ArePadsVisible','true');put(device,'AreDevicesVisible','true');
  const manifest={name,source:root,copy_samples:copySamples,layout,pad_grid_size:16,pad_grid_first_note:36,outer_macro_slots:macroSlots(names.length),sampler_output_db:-12,velocity_to_volume:.35,sample_gain_db:0,pads:[],skipped:plan.skipped};let macro=0;
  try{
   for(const [cat,entries]of Object.entries(groups)){
-   const [label,fixedNote,color]=types[cat],note=layout==='sequential'?36+macro:fixedNote,pad=clone(donor);pad.attrs.Id=String(macro);put(pad,'Name',label);put(pad,'DocumentColorIndex',color);put(pad,'AutoColored','false');put(pad,'ZoneSettings/ReceivingNote',128-note);put(pad,'ZoneSettings/SendingNote',60);put(pad,'ZoneSettings/ChokeGroup',['closed_hat','open_hat','hat'].includes(cat)?1:0);put(device,'MacroColor.'+macro,color);
+   const [label,,color]=types[cat],note=notes[cat],pad=clone(donor);pad.attrs.Id=String(macro);put(pad,'Name',label);put(pad,'DocumentColorIndex',color);put(pad,'AutoColored','false');put(pad,'ZoneSettings/ReceivingNote',128-note);put(pad,'ZoneSettings/SendingNote',60);put(pad,'ZoneSettings/ChokeGroup',['closed_hat','open_hat','hat'].includes(cat)?1:0);put(device,'MacroColor.'+macro,color);
    const loaded=entries.map(([file,rel,meta])=>{if(!copySamples)return [file,rel,meta];const destRel=path.join('Samples',rel),dest=path.join(stage,destRel);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(file,dest);return [dest,destRel,meta];});
    find(pad,'DevicePresets').children=[padRack(donor,loaded,label,macro)];
    bp.children.push(pad);manifest.pads.push({type:cat,name:label,note,samples:entries.map(([,rel])=>rel),banks:Math.ceil(entries.length/128),controls:['Sample Select',...PAD_CONTROLS.map(c=>c[0]),...(entries.length>128?['Bank']:[])],macro:macro+1});macro++;

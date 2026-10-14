@@ -38,7 +38,7 @@ The status line shows sample/pad counts, progress, and errors. The device fits L
 
 - WAV (PCM and float), AIFF/uncompressed AIFC, and FLAC audio.
 - Folder contents stay together. There is no filename or sound classification. Nested folders remain separate; root-level samples use the selected folder name. Up to 16 non-empty sample folders are supported per rack.
-- Folders occupy consecutive pads from C1 in natural order. Root note and pad output both use C3 to preserve original sample pitch.
+- **Sequential pads** on uses consecutive notes from C1 in natural folder order. Off assigns familiar positions by exact folder names and fills unused notes for all remaining folders, including duplicate preferred positions. This affects note placement only. Root note and pad output both use C3 to preserve original sample pitch.
 - One Instrument Rack per folder with Sampler inside, and Sample Select, Attack, Decay, Sustain, Release, Tune, Level, and Velocity macros. One Sampler per folder up to 128 samples. Non-overlapping Sample Select zones cover every value from 0 to 127. A knob may pass through several values for the same sound; all sounds are reachable.
 - Above 128 samples, one Instrument Rack on the same pad holds banks of up to 128 sounds. **Select** chooses a sound within a bank; **Bank** chooses the bank. Select the pad and use its inner Bank knob. Maximum 16,384 samples per folder; larger categories fail explicitly.
 - Velocity-to-volume defaults to 35%, natural tails and no oscillator or filter coloration. No choke groups are inferred from folder names.

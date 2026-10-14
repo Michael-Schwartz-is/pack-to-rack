@@ -1,6 +1,6 @@
 # Pack to Rack
 
-Current version: **0.2**. See the [changelog](CHANGELOG.md).
+Current version: **0.3**. See the [changelog](CHANGELOG.md).
 
 [Website](https://p2r.gushon.com)
 

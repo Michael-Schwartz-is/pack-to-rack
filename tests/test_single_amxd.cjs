@@ -43,7 +43,7 @@ assert(events.some(e=>e[0]==='status'&&e[1].startsWith('v'+run('VERSION')+' ·')
    fs.mkdirSync(path.join(libraries,label),{recursive:true});
    for(let i=0;i<count;i++)fs.writeFileSync(path.join(libraries,label,'kick snare loop '+i+'.wav'),seed);
   }
-  handlers.destination(custom);await handlers.folder(libraries);await handlers.build();
+  handlers.destination(custom);handlers.sequential(1);await handlers.folder(libraries);await handlers.build();
   built=events.findLast(e=>e[0]==='built');m=JSON.parse(fs.readFileSync(path.join(path.dirname(built[1]),'manifest.json')));
   assert.equal(m.pads.length,6);assert.equal(m.pads.reduce((n,p)=>n+p.samples.length,0),194);
   for(const [label,count]of Object.entries(expected))assert.equal(m.pads.find(p=>p.name===label).samples.length,count);
@@ -52,6 +52,16 @@ assert(events.some(e=>e[0]==='status'&&e[1].startsWith('v'+run('VERSION')+' ·')
   context.folderPads=m.pads;
   assert.equal(run("all(parseXml(folderXml),'MultiSamplePart').length"),194);
   assert(run("folderPads.every((p,i)=>find(parseXml(folderXml),'GroupDevicePreset/Device/DrumGroupDevice/MacroDisplayNames.'+i).attrs.Value===p.name)"));
+  const inventory=m.pads.map(p=>[p.name,p.samples]);
+  handlers.sequential(0);await handlers.build();
+  built=events.findLast(e=>e[0]==='built');m=JSON.parse(fs.readFileSync(path.join(path.dirname(built[1]),'manifest.json')));
+  assert.deepEqual(m.pads.map(p=>[p.name,p.samples]),inventory);
+  assert.equal(m.pads.find(p=>p.name==='Kicks').note,36);assert.equal(m.pads.find(p=>p.name==='Claps').note,39);assert.equal(m.pads.find(p=>p.name==='Toms').note,45);
+  assert.equal(new Set(m.pads.map(p=>p.note)).size,6);
+  fs.mkdirSync(path.join(libraries,'Kick'));fs.writeFileSync(path.join(libraries,'Kick','another.wav'),seed);
+  await handlers.build();built=events.findLast(e=>e[0]==='built');m=JSON.parse(fs.readFileSync(path.join(path.dirname(built[1]),'manifest.json')));
+  assert.equal(m.pads.length,7);assert.equal(new Set(m.pads.map(p=>p.note)).size,7);
+  assert.equal(m.pads.find(p=>p.name==='Kicks').samples.length,64);assert.equal(m.pads.find(p=>p.name==='Kick').samples.length,1);
   handlers.destination('');
   const pack=path.join(home,'Bank & XML Pack'),kick=path.join(pack,'Kicks');fs.mkdirSync(kick,{recursive:true});
   const wav=fs.readFileSync(path.join(root,'examples','Demo Pack','Kicks','Kick 01.wav'));

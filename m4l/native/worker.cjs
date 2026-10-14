@@ -24,7 +24,7 @@ function outputDirectory(){
  }
  return path.join(userLibrary(),'Presets','Instruments','Drum Rack','Pack to Rack');
 }
-let folder='',rackName='',destination='',copySamples=true,busy=false,latest='';
+let folder='',rackName='',destination='',copySamples=true,sequential=false,busy=false,latest='';
 function status(s){max.outlet('status',s);}
 function uiBox(name,attribute,...values){max.outlet('ui','script','sendbox',name,attribute,...values);}
 const DROP_DECORATIONS=[];
@@ -71,10 +71,11 @@ max.addHandler('destination',(...args)=>{
  uiBox('destination_path','annotation',destination||'Using the detected User Library. Browse or type a full folder path to choose another destination.');
 });
 max.addHandler('copy',v=>{copySamples=!!Number(v);});
+max.addHandler('sequential',v=>{sequential=!!Number(v);});
 max.addHandler('build',async()=>{
  if(busy)return;if(!folder){status('Choose a sample-pack or drum_hits folder first.');return;}
  busy=true;max.outlet('active',0);uiBox('destination_path','readonly',1);status('Building Drum Rack'+(copySamples?' and copying samples…':'…'));await nextTurn();
- try{const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);const result=build(scan(folder),outputDirectory(),{},copySamples,name,{layout:'sequential'});latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);}
+ try{const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);const result=build(scan(folder),outputDirectory(),{},copySamples,name,{layout:sequential?'sequential':'fixed'});latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);}
  catch(e){status('Error: '+e.message);}finally{busy=false;max.outlet('active',1);uiBox('destination_path','readonly',0);}
 });
 max.addHandler('load',(...args)=>{

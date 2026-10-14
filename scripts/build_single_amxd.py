@@ -80,9 +80,12 @@ for rect in [[30,69,13,2],[30,69,2,27],[41,69,2,7],[41,74,22,2],[61,74,2,22],[30
  add(name,'panel',rect,varname=name,bgcolor=[1,.70,.38,1],border=0,rounded=1,ignoreclick=1)
 boxes['worker']['code']=boxes['worker']['code'].replace('const DROP_DECORATIONS=[];', 'const DROP_DECORATIONS='+json.dumps(drop_decorations)+';')
 add('uipatcher','newobj',text='thispatcher')
+add('sequential','live.text',[274,85,134,20],appearance=1,mode=1,text='Sequential pads',texton='Sequential pads',fontsize=11,labeltextcolor=[.86,.86,.86,1],numinlets=1,numoutlets=2,outlettype=['int',''],parameter_enable=1,varname='sequential_pads',annotation_name='Sequential pads',annotation='ON: consecutive pads from C1. OFF: familiar positions for recognized folder names; other folders get unused pads. Every folder and sound stays separate in both modes.',saved_attribute_attributes={'valueof':{'parameter_longname':'Sequential pads','parameter_shortname':'Sequential','parameter_type':2,'parameter_enum':['Fixed map','Sequential'],'parameter_initial_enable':1,'parameter_initial':[0]}})
+add('sequential_pre','newobj',text='prepend sequential')
+wire('sequential','sequential_pre');wire('sequential_pre','worker')
 wire('route','uipatcher',4)
 # Disable checkbox changes during conversion, along with the existing buttons.
-wire('active','copy');wire('active','drop_hint');wire('active','destination_browse')
+wire('active','copy');wire('active','sequential');wire('active','drop_hint');wire('active','destination_browse')
 p['dependency_cache']=[]
 p['appversion']={'major':9,'minor':1,'revision':4,'architecture':'arm64','modernui':1}
 p['project']['contents']={'patchers':{}}

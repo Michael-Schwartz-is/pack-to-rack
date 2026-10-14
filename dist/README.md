@@ -1,6 +1,6 @@
 # Pack to Rack — one-file device
 
-Version **0.2**. The device displays its version on startup. The Git tag `v0.2` identifies this release's source and AMXD.
+Version **0.3**. The device displays its version on startup. The Git tag `v0.3` identifies this release's source and AMXD.
 
 **Save to:** click **Browse…** to choose any destination folder, or type/paste its full path. Each rack gets its own folder there, with its copied samples beside the `.adg`. The choice is stored with the device in your Live Set. Clear the field (or enter `User Library`) to use the detected library again. Custom destinations are used directly; the device does not append a Presets tree. An invalid destination stops the export instead of silently saving elsewhere.
 
@@ -22,6 +22,6 @@ Verification: loaded from a folder with only the AMXD; generated and loaded a re
 
 Templates derive from Ben Juodvalkis' MIT-licensed Ableton Device Creator. The license is embedded in the device's converter code. No sample audio is bundled in the AMXD.
 
-Updated defaults: Sampler global output −12 dB; sample-layer gain 0 dB. The pad viewport opens at C1 and shows 16 pads, with unused pads empty. One selector macro is displayed per sample folder; bank controls stay within the pad. Folders occupy consecutive notes from C1. Reload older device instances to use the updated AMXD.
+Updated defaults: Sampler global output −12 dB; sample-layer gain 0 dB. The pad viewport opens at C1 and shows 16 pads, with unused pads empty. One selector macro is displayed per sample folder; bank controls stay within the pad. **Sequential pads** on places folders consecutively from C1. Off keeps familiar positions for exact folder names such as Kicks (C1), Snares (D1), and Claps (D♯1); unfamiliar folders and duplicate preferred positions get unused pads. Both modes preserve every folder and sample. Reload older device instances to use the updated AMXD.
 
 Pad controls: every drum pad contains an Instrument Rack with Sample Select, Attack, Decay, Sustain, Release, Tune, Level, and Velocity macros. Larger folders add a ninth Bank macro. The outer rack maps one selector per sample folder and rounds the visible slots to complete native columns (up to 16). Unused slots stay unmapped. Exact odd display counts can clip the pad grid and inner macros in Live 12.4.2. Sampler velocity-to-volume defaults to 35%; global output remains −12 dB, sample layers 0 dB. Envelope defaults preserve natural tails. Decay becomes audible when Sustain is lowered; Release follows note-off. These defaults apply to newly built racks. Reload the builder to use this version.
