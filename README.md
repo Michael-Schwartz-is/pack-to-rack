@@ -1,6 +1,6 @@
 # Pack to Rack
 
-Current version: **0.1**. See the [changelog](CHANGELOG.md).
+Current version: **0.2**. See the [changelog](CHANGELOG.md).
 
 [Website](https://p2r.gushon.com)
 
@@ -35,7 +35,7 @@ Drums / One-shots
 
 ## Your one-shots, ready to mix and match.
 
-Pack to Rack turns your one-shots folder into a neatly organized rack with sample selectors and saves the samples to your User Library.
+Pack to Rack gives each sample folder its own pad and a selector knob with the same name. Choose where to save the rack and copied samples, or use your User Library.
 
 Start a pattern, then swap kicks, snares, hats, and other sounds while it plays. Explore the pack by making music with it.
 
@@ -49,7 +49,7 @@ Randomize the sample selection for a quick sketch or a fresh starting point. Kee
 
 ## Runs locally. No telemetry.
 
-Pack to Rack reads the sample folder you choose and saves the rack and copied samples to your Ableton User Library. It doesn’t upload data or collect telemetry.
+Pack to Rack reads the sample folder you choose and saves the rack and copied samples to your chosen destination. It doesn’t upload data or collect telemetry.
 
 The code is open source under the [MIT license](LICENSE).
 

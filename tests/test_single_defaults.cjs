@@ -41,7 +41,7 @@ try{
   const slots=n<=8?Math.ceil(n/2)*2:n<=12?12:16;
   assert.equal(Number(run("find(r,'GroupDevicePreset/Device/DrumGroupDevice/NumVisibleMacroControls').attrs.Value")),slots);
   assert.equal(result.pads.length,n);
-  for(let i=0;i<n;i++){ctx.i=i;assert(run("find(r,'GroupDevicePreset/Device/DrumGroupDevice/MacroDisplayNames.'+i).attrs.Value").endsWith(' Select'));}
+  for(let i=0;i<n;i++){ctx.i=i;assert.equal(run("find(r,'GroupDevicePreset/Device/DrumGroupDevice/MacroDisplayNames.'+i).attrs.Value"),result.pads[i].name);}
  }
  // A large category still gets exactly one outer macro; Bank stays inside the pad.
  run("var bankPlan={...plan,samples:Array(129).fill({...plan.samples[0],category:'kick'})};");
@@ -52,6 +52,6 @@ try{
  for(const inner of run("all(r,'InstrumentGroupDevice')")){ctx.inner=inner;assert.equal(run("find(inner,'ChainSelector/KeyMidi/NoteOrController').attrs.Value"),'8');}
 
  const outer=run("find(r,'GroupDevicePreset/Device/DrumGroupDevice')");assert.equal(outer.children.find(x=>x.tag==='MacroDisplayNames.1').attrs.Value,'Macro 2');
- assert(p.boxes.some(x=>x.box.id==='sequential'&&x.box.maxclass==='live.text'&&x.box.mode===1&&x.box.parameter_enable===1));
+ assert(!p.boxes.some(x=>x.box.id==='sequential'));
  console.log('Wrapped pad controls and updated defaults passed: 4/12 pads, sequential/fixed MIDI maps, -12 dB Sampler + 0 dB layers, one outer selector per pad including banked categories.');
 }finally{fs.rmSync(home,{recursive:true,force:true});}

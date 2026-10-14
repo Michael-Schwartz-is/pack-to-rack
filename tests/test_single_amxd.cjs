@@ -21,6 +21,38 @@ assert(events.some(e=>e[0]==='status'&&e[1].startsWith('v'+run('VERSION')+' ·')
   let built=events.findLast(e=>e[0]==='built');assert(built&&fs.existsSync(built[1]));
   let m=JSON.parse(fs.readFileSync(path.join(path.dirname(built[1]),'manifest.json')));
   assert.equal(m.pads.length,3);assert.equal(m.pads.reduce((n,p)=>n+p.samples.length,0),37);
+  const custom=path.join(home,'Custom Save & Backup','Drum Racks');
+  handlers.destination(custom);await handlers.build();
+  built=events.findLast(e=>e[0]==='built');assert.equal(path.dirname(path.dirname(built[1])),custom);
+  context.customXml=zlib.gunzipSync(fs.readFileSync(built[1])).toString();
+  const copied=run("all(parseXml(customXml),'MultiSamplePart').map(p=>find(p,'SampleRef/FileRef/Path').attrs.Value)");
+  assert.equal(copied.length,37);assert(copied.every(f=>f.startsWith(custom+path.sep)&&fs.existsSync(f)));
+  const before=events.filter(e=>e[0]==='built').length;
+  handlers.destination('relative/save');await handlers.build();
+  assert.equal(events.filter(e=>e[0]==='built').length,before,'Invalid destination must not silently export to the default');
+  assert.match(events.findLast(e=>e[0]==='status')[1],/full folder path/);
+  handlers.destination('');assert.notEqual(run('outputDirectory()'),custom);
+  const destinationBox=patch.boxes.find(x=>x.box.id==='destination_path').box;
+  assert.equal(destinationBox.parameter_enable,1);assert.equal(destinationBox.saved_attribute_attributes.valueof.parameter_type,3);
+  assert.equal(patch.boxes.find(x=>x.box.id==='build_sel').box.text,'t b b b');
+  assert(patch.lines.some(l=>l.patchline.source[0]==='build_sel'&&l.patchline.source[1]===2&&l.patchline.destination[0]==='destination_path'),'Read typed destination before starting the build');
+  // The user's six libraries must stay separate, regardless of sound filenames.
+  const libraries=path.join(home,'One Shot'),expected={Kicks:64,Synth:50,Fills:29,Toms:15,Claps:21,Fx:15};
+  const seed=fs.readFileSync(path.join(root,'examples','Demo Pack','Kicks','Kick 01.wav'));
+  for(const [label,count]of Object.entries(expected)){
+   fs.mkdirSync(path.join(libraries,label),{recursive:true});
+   for(let i=0;i<count;i++)fs.writeFileSync(path.join(libraries,label,'kick snare loop '+i+'.wav'),seed);
+  }
+  handlers.destination(custom);await handlers.folder(libraries);await handlers.build();
+  built=events.findLast(e=>e[0]==='built');m=JSON.parse(fs.readFileSync(path.join(path.dirname(built[1]),'manifest.json')));
+  assert.equal(m.pads.length,6);assert.equal(m.pads.reduce((n,p)=>n+p.samples.length,0),194);
+  for(const [label,count]of Object.entries(expected))assert.equal(m.pads.find(p=>p.name===label).samples.length,count);
+  assert.deepEqual(Array.from(m.pads,p=>p.note),[36,37,38,39,40,41]);
+  context.folderXml=zlib.gunzipSync(fs.readFileSync(built[1])).toString();
+  context.folderPads=m.pads;
+  assert.equal(run("all(parseXml(folderXml),'MultiSamplePart').length"),194);
+  assert(run("folderPads.every((p,i)=>find(parseXml(folderXml),'GroupDevicePreset/Device/DrumGroupDevice/MacroDisplayNames.'+i).attrs.Value===p.name)"));
+  handlers.destination('');
   const pack=path.join(home,'Bank & XML Pack'),kick=path.join(pack,'Kicks');fs.mkdirSync(kick,{recursive:true});
   const wav=fs.readFileSync(path.join(root,'examples','Demo Pack','Kicks','Kick 01.wav'));
   for(let i=0;i<257;i++)fs.writeFileSync(path.join(kick,'kick <&> '+i+'.wav'),wav);

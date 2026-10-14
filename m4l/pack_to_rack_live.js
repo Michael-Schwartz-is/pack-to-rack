@@ -78,7 +78,7 @@ function checkloaded(){
     var gridCount=gridPads.length/2;
     outlet(0,'verified_macros',wanted,visible,gridCount);
     if(visible!==wanted){ui('Rack loaded; macro display count could not be corrected.');return;}
-    ui('Ready: '+selectors+' drum types / '+visible+' macro slots.');return;
+    ui('Ready: '+selectors+' folders / '+visible+' macro slots.');return;
    }
   }
   if(++attempts<20){loadTask.schedule(250);return;}

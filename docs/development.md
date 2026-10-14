@@ -1,6 +1,6 @@
 # Pack → Rack
 
-A local sample-pack converter for Ableton Live 12 with **Sampler** (included in Suite). Pick a pack folder, review the detected categories, and export a native `.adg` Drum Rack: one pad per drum type, with a named Sample Select macro for every pad.
+A local sample-pack converter for Ableton Live 12 with **Sampler** (included in Suite). Pick a pack folder and export a native `.adg` Drum Rack: one pad per folder containing supported audio, with the folder name on its selector knob.
 
 ## Single-file Max for Live workflow
 
@@ -28,28 +28,31 @@ Windows path and export regressions: the embedded worker preserves drive roots (
 
 Drop a sample folder onto the device, or click the drop field. It scans automatically and the drop field becomes **Build Rack**. Edit the rack name above the button, then click to create and load the rack on a new MIDI track. **Change folder…** selects another pack.
 
+**Save to** accepts a full folder path or a folder chosen with **Browse…**. A non-empty custom destination overrides library detection and is used directly. Each export still creates its own rack folder and never overwrites an earlier export. The destination text is a non-automatable Blob device parameter so Live can store it with the Set; the Build trigger reads the current field before starting conversion. Clear the field or enter `User Library` to return to the default.
+
 - **Copy samples** (on): keep audio beside the exported rack. Off references the original pack.
-- **Sequential pads** (off): fixed drum mapping. On places drum types consecutively from C1.
 
 The status line shows sample/pad counts, progress, and errors. The device fits Live's compact device view. Rack macro displays use complete native columns: unused slots stay empty, so odd drum-type counts never clip the 4×4 pads or the inner controls. The retired browser app is preserved under `archive/browser-app`.
 
 ## What it builds
 
 - WAV (PCM and float), AIFF/uncompressed AIFC, and FLAC audio.
-- Categories inferred from the nearest descriptive folder and filenames. Generic hats are refined into open/closed hats where filenames specify them. Unrecognized sounds are retained on **Other**, with an option to exclude or reassign them.
-- Stable MIDI pad locations: Kick C1, Snare D1, Clap D♯1, Closed Hat F♯1, Open Hat A♯1, generic Hi-Hat G♯1, plus separate cymbal, percussion and other pads. Root note and pad output both use C3 to preserve original sample pitch.
-- One Instrument Rack per category with Sampler inside, and Sample Select, Attack, Decay, Sustain, Release, Tune, Level, and Velocity macros. One Sampler per category up to 128 samples. Non-overlapping Sample Select zones cover every value from 0 to 127. A knob may pass through several values for the same sound; all sounds are reachable.
-- Above 128 samples, one Instrument Rack on the same pad holds banks of up to 128 sounds. **Select** chooses a sound within a bank; **Bank** chooses the bank. Select the pad and use its inner Bank knob. Maximum 16,384 samples per category; larger categories fail explicitly.
-- Velocity-to-volume defaults to 35%, natural tails, no oscillator or filter coloration, and a shared choke group for hats.
+- Folder contents stay together. There is no filename or sound classification. Nested folders remain separate; root-level samples use the selected folder name. Up to 16 non-empty sample folders are supported per rack.
+- Folders occupy consecutive pads from C1 in natural order. Root note and pad output both use C3 to preserve original sample pitch.
+- One Instrument Rack per folder with Sampler inside, and Sample Select, Attack, Decay, Sustain, Release, Tune, Level, and Velocity macros. One Sampler per folder up to 128 samples. Non-overlapping Sample Select zones cover every value from 0 to 127. A knob may pass through several values for the same sound; all sounds are reachable.
+- Above 128 samples, one Instrument Rack on the same pad holds banks of up to 128 sounds. **Select** chooses a sound within a bank; **Bank** chooses the bank. Select the pad and use its inner Bank knob. Maximum 16,384 samples per folder; larger categories fail explicitly.
+- Velocity-to-volume defaults to 35%, natural tails and no oscillator or filter coloration. No choke groups are inferred from folder names.
 - Naturally sorted samples and a `manifest.json` listing every pad and input sample. Export never overwrites an existing rack.
 
-The scanner excludes paths explicitly named as loops/breaks by default. It does not listen to or classify audio with AI, and cannot detect an unlabeled loop. Use the checkbox to include named loops. Unsupported formats and invalid headers appear in the skipped-file list. AIFF and FLAC headers are checked; compressed payloads are not fully decoded during scanning.
+The scanner includes every supported audio file regardless of its name. It does not infer sound categories or decide which files are loops. Unsupported formats and invalid headers appear in the skipped-file list. AIFF and FLAC headers are checked; compressed payloads are not fully decoded during scanning.
 
 ## Samples and moving exports
 
 **Copy samples** is enabled by default and creates a `Samples/` tree beside the rack. Originals are untouched. Sample references use absolute paths for reliable loading on this Mac. If you move an export folder or share it, locate its `Samples/` folder with Live's missing-file search and resave the rack. For a portable song project, use Live's **Collect All and Save**. Reference mode avoids copying but depends on your original pack staying in place.
 
-## Command line
+## Legacy command line
+
+The Python CLI retains its original drum classification and fixed mapping. It is separate from the folder-based standalone v0.2 device.
 
 ```sh
 python3 rack.py "/path/to/pack/drum_hits"

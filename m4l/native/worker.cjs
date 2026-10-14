@@ -17,8 +17,14 @@ function userLibrary(){
  }catch(e){/* Live has not written settings yet; use its platform default. */}
  return fallback;
 }
-function outputDirectory(){return path.join(userLibrary(),'Presets','Instruments','Drum Rack','Pack to Rack');}
-let folder='',rackName='',copySamples=true,sequential=false,busy=false,latest='';
+function outputDirectory(){
+ if(destination){
+  if(!path.isAbsolute(destination))throw Error('Save destination must be a full folder path. Use Browse to choose it.');
+  return destination;
+ }
+ return path.join(userLibrary(),'Presets','Instruments','Drum Rack','Pack to Rack');
+}
+let folder='',rackName='',destination='',copySamples=true,busy=false,latest='';
 function status(s){max.outlet('status',s);}
 function uiBox(name,attribute,...values){max.outlet('ui','script','sendbox',name,attribute,...values);}
 const DROP_DECORATIONS=[];
@@ -58,13 +64,18 @@ async function scanFolder(p){
 }
 max.addHandler('folder',(...args)=>scanFolder(args.join(' ')));
 max.addHandler('name',(...args)=>{if(!busy)rackName=cleanName(args.join(' '));});
+max.addHandler('destination',(...args)=>{
+ if(busy)return;
+ const value=args.join(' ').trim();
+ destination=value==='User Library'?'':normalize(value.replace(/^"(.*)"$/,'$1'));
+ uiBox('destination_path','annotation',destination||'Using the detected User Library. Browse or type a full folder path to choose another destination.');
+});
 max.addHandler('copy',v=>{copySamples=!!Number(v);});
-max.addHandler('sequential',v=>{sequential=!!Number(v);});
 max.addHandler('build',async()=>{
  if(busy)return;if(!folder){status('Choose a sample-pack or drum_hits folder first.');return;}
- busy=true;max.outlet('active',0);status('Building Drum Rack'+(copySamples?' and copying samples…':'…'));await nextTurn();
- try{const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);const result=build(scan(folder),outputDirectory(),{},copySamples,name,{layout:sequential?'sequential':'fixed'});latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);}
- catch(e){status('Error: '+e.message);}finally{busy=false;max.outlet('active',1);}
+ busy=true;max.outlet('active',0);uiBox('destination_path','readonly',1);status('Building Drum Rack'+(copySamples?' and copying samples…':'…'));await nextTurn();
+ try{const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);const result=build(scan(folder),outputDirectory(),{},copySamples,name,{layout:'sequential'});latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);}
+ catch(e){status('Error: '+e.message);}finally{busy=false;max.outlet('active',1);uiBox('destination_path','readonly',0);}
 });
 max.addHandler('load',(...args)=>{
  const file=args.join(' ');if(!latest||file!==latest||!fs.existsSync(file)){status('No completed rack to load.');return;}

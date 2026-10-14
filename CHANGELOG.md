@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2 — 2026-10-14
+
+- Choose a save destination with Browse or type a full folder path, on any drive.
+- Use folder names directly for pads and selector knobs. Keep each folder's sounds together without classifying filenames or merging unrelated folders into Other.
+- Put folders on consecutive pads from C1. Include all supported audio; filenames containing loop/break no longer cause exclusion.
+- Store the destination as a device parameter in the Live Set. Each rack and its copied samples stay together in their own folder at that destination.
+- Keep User Library as the default; clearing the destination returns to automatic library detection.
+- Give the status line more room and keep it on one line.
+
+This release addresses destination selection. The report of missing sounds on Windows is still being investigated; it is not claimed fixed here.
+
 ## 0.1 — 2026-10-13
 
 - Preserve Windows drive letters when selecting sample folders on other drives.

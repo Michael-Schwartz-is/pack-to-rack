@@ -10,26 +10,6 @@ const TYPES = {
 };
 const AUDIO=new Set(['.wav','.aif','.aiff','.flac']);
 const OTHER_AUDIO=new Set(['.mp3','.ogg','.m4a','.aac','.wma']);
-function words(s){return s.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([a-zA-Z])([0-9])/g,'$1 $2').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
-const CHECKS=[
- ['open_hat',/\b(open(?:ed)?\s*(?:hi\s*)?hats?|ohh?|hho|hats?\s*open)\b/],
- ['closed_hat',/\b(clos(?:ed|e)\s*(?:hi\s*)?hats?|chh?|hhc|hats?\s*closed|tight\s*hats?)\b/],
- ['kick',/\b(kicks?|bd|bass\s*drums?)\b/],['snare',/\b(snares?|snr|sd)\b/],['clap',/\b(claps?|hand\s*claps?|cp)\b/],
- ['rim',/\b(rims?|rimshots?|rim\s*shots?|side\s*sticks?|sidesticks?|sticks?)\b/],['hat',/\b(hats?|hi\s*hats?|hihats?|hh)\b/],
- ['tom',/\b(toms?|tom\s*toms?)\b/],['crash',/\b(crash(?:es)?)\b/],['ride',/\b(rides?)\b/],
- ['cymbal',/\b(cymbals?|cym|splash(?:es)?|china)\b/],['shaker',/\b(shakers?|shk|maracas?)\b/],
- ['tambourine',/\b(tambourines?|tambs?)\b/],['perc',/\b(percs?|percussion|congas?|bongos?|cowbells?|claves?|timbales?|woodblocks?|triangles?|bells?|taikos?)\b/],
- ['fx',/\b(fx|sfx|effects?|foley|impacts?|glitches?)\b/]
-];
-function detect(s){const w=words(s);return CHECKS.find(([,r])=>r.test(w))?.[0];}
-function classify(relative){
- const parts=relative.split(/[\\/]/),file=parts.pop(),nameType=detect(path.parse(file).name);
- for(const folder of [...parts].reverse()){
-  if(['open','opened','closed','close'].includes(words(folder))&&parts.some(p=>detect(p)==='hat'))return /^(open|opened)$/.test(words(folder))?'open_hat':'closed_hat';
-  const type=detect(folder);if(type)return ['hat','perc','cymbal','fx'].includes(type)&&nameType?nameType:type;
- }
- return nameType||'other';
-}
 const sortNames=(a,b)=>a.localeCompare(b,'en',{numeric:true,sensitivity:'base'});
 function audioInfo(file){
  const fd=fs.openSync(file,'r'),size=fs.fstatSync(fd).size;
@@ -56,17 +36,23 @@ function audioInfo(file){
   return {frames,rate,channels,duration:frames/rate};
  }finally{fs.closeSync(fd);}
 }
-function scan(folder,includeLoops=false){
+function scan(folder){
  const root=fs.realpathSync(folder);if(!fs.statSync(root).isDirectory())throw Error('Choose an existing sample-pack folder.');const samples=[],skipped=[];
  function visit(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true}).sort((a,b)=>sortNames(a.name,b.name))){
   if(entry.name.startsWith('.')||entry.name==='__MACOSX')continue;
   const file=path.join(dir,entry.name);if(entry.isDirectory()){visit(file);continue;}if(!entry.isFile())continue;
   const ext=path.extname(file).toLowerCase(),relative=path.relative(root,file);if(!AUDIO.has(ext)&&!OTHER_AUDIO.has(ext))continue;
   if(!AUDIO.has(ext)){skipped.push({path:relative,reason:'Unsupported format; use WAV, AIFF or FLAC'});continue;}
-  if(!includeLoops&&/\b(loops?|breaks?|drum\s*beats?)\b/.test(words(relative))){skipped.push({path:relative,reason:'Loop folder or filename'});continue;}
-  try{samples.push({path:relative,category:classify(relative),...audioInfo(file)});}catch(e){skipped.push({path:relative,reason:e.message});}
+  const parent=path.relative(root,dir).split(path.sep).join('/');
+  try{samples.push({path:relative,category:'folder:'+parent,...audioInfo(file)});}catch(e){skipped.push({path:relative,reason:e.message});}
  }}visit(root);
- return {folder:root,name:path.basename(root),samples,skipped,types:Object.fromEntries(Object.entries(TYPES).map(([k,[name,note]])=>[k,{name,note}]))};
+ const types={};
+ for(const s of samples){
+  if(types[s.category])continue;
+  const relative=s.category.slice(7),index=Object.keys(types).length;
+  types[s.category]={name:relative?relative.split('/').at(-1):path.basename(root),note:36+index,color:[9,16,17,26,27,32,45,47,54,35,36,38,60,28,18,48][index%16]};
+ }
+ return {folder:root,name:path.basename(root),samples,skipped,types};
 }
 // Small XML DOM for bundled Ableton templates. User input is escaped on output.
 function unescapeXml(s){return s.replace(/&(?:amp|lt|gt|quot|apos|#\d+|#x[\da-f]+);/gi,e=>{const m={'&amp;':'&','&lt;':'<','&gt;':'>','&quot;':'"','&apos;':"'"};return m[e]??String.fromCodePoint(e.startsWith('&#x')?parseInt(e.slice(3,-1),16):parseInt(e.slice(2,-1),10));});}
@@ -144,18 +130,19 @@ function validate(rack,count){
 function build(plan,outputDir,assignments={},copySamples=true,givenName,options={}){
  const layout=options.layout||'fixed';if(!['fixed','sequential'].includes(layout))throw Error('Unknown pad layout: '+layout);
  const root=fs.realpathSync(plan.folder),name=(givenName||plan.name).replace(/[/:\\\x00-\x1f]/g,'-').replace(/^[ .]+|[ .]+$/g,'')||'Sample Pack',output=path.resolve(outputDir),groups={};
- for(const [cat]of Object.entries(TYPES)){
-  const entries=[];for(const s of plan.samples){const c=assignments[s.path]||s.category;if(c==='skip')continue;if(!TYPES[c])throw Error('Unknown category: '+c);if(c!==cat)continue;const file=fs.realpathSync(path.resolve(root,s.path)),rel=path.relative(root,file);if(rel==='..'||rel.startsWith('..'+path.sep)||path.isAbsolute(rel))throw Error('Sample outside chosen folder');entries.push([file,s.path,audioInfo(file)]);}
-  if(entries.length>16384)throw Error(TYPES[cat][0]+' exceeds 16,384 samples; split this folder.');if(entries.length)groups[cat]=entries;
+ const types={...TYPES};for(const [id,t]of Object.entries(plan.types||{})){if(!types[id])types[id]=[t.name,t.note,t.color??60];}
+ for(const [cat]of Object.entries(types)){
+  const entries=[];for(const s of plan.samples){const c=assignments[s.path]||s.category;if(c==='skip')continue;if(!types[c])throw Error('Unknown category: '+c);if(c!==cat)continue;const file=fs.realpathSync(path.resolve(root,s.path)),rel=path.relative(root,file);if(rel==='..'||rel.startsWith('..'+path.sep)||path.isAbsolute(rel))throw Error('Sample outside chosen folder');entries.push([file,s.path,audioInfo(file)]);}
+  if(entries.length>16384)throw Error(types[cat][0]+' exceeds 16,384 samples; split this folder.');if(entries.length)groups[cat]=entries;
  }
- if(!Object.keys(groups).length)throw Error('No samples selected.');fs.mkdirSync(output,{recursive:true});const stage=fs.mkdtempSync(path.join(output,'.rack-build-'));let target=path.join(output,name),suffix=2;while(fs.existsSync(target))target=path.join(output,name+' '+suffix++);
+ if(!Object.keys(groups).length)throw Error('No samples selected.');if(Object.keys(groups).length>16)throw Error('More than 16 sound groups; choose a smaller folder.');fs.mkdirSync(output,{recursive:true});const stage=fs.mkdtempSync(path.join(output,'.rack-build-'));let target=path.join(output,name),suffix=2;while(fs.existsSync(target))target=path.join(output,name+' '+suffix++);
  const rack=loadTemplate('drum'),preset=find(rack,'GroupDevicePreset'),bp=find(preset,'BranchPresets'),donor=clone(bp.children[0]),device=find(preset,'Device/DrumGroupDevice');bp.children=[];clearMaps(rack);
- const names=Object.keys(groups).map(k=>TYPES[k][0]+' Select');
+ const names=Object.keys(groups).map(k=>types[k][0]);
  resetMacros(device,names);put(device,'UserName',name);put(device,'PadScrollPosition',19);put(device,'ArePadsVisible','true');put(device,'AreDevicesVisible','true');
  const manifest={name,source:root,copy_samples:copySamples,layout,pad_grid_size:16,pad_grid_first_note:36,outer_macro_slots:macroSlots(names.length),sampler_output_db:-12,velocity_to_volume:.35,sample_gain_db:0,pads:[],skipped:plan.skipped};let macro=0;
  try{
   for(const [cat,entries]of Object.entries(groups)){
-   const [label,fixedNote,color]=TYPES[cat],note=layout==='sequential'?36+macro:fixedNote,pad=clone(donor);pad.attrs.Id=String(macro);put(pad,'Name',label);put(pad,'DocumentColorIndex',color);put(pad,'AutoColored','false');put(pad,'ZoneSettings/ReceivingNote',128-note);put(pad,'ZoneSettings/SendingNote',60);put(pad,'ZoneSettings/ChokeGroup',['closed_hat','open_hat','hat'].includes(cat)?1:0);put(device,'MacroColor.'+macro,color);
+   const [label,fixedNote,color]=types[cat],note=layout==='sequential'?36+macro:fixedNote,pad=clone(donor);pad.attrs.Id=String(macro);put(pad,'Name',label);put(pad,'DocumentColorIndex',color);put(pad,'AutoColored','false');put(pad,'ZoneSettings/ReceivingNote',128-note);put(pad,'ZoneSettings/SendingNote',60);put(pad,'ZoneSettings/ChokeGroup',['closed_hat','open_hat','hat'].includes(cat)?1:0);put(device,'MacroColor.'+macro,color);
    const loaded=entries.map(([file,rel,meta])=>{if(!copySamples)return [file,rel,meta];const destRel=path.join('Samples',rel),dest=path.join(stage,destRel);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(file,dest);return [dest,destRel,meta];});
    find(pad,'DevicePresets').children=[padRack(donor,loaded,label,macro)];
    bp.children.push(pad);manifest.pads.push({type:cat,name:label,note,samples:entries.map(([,rel])=>rel),banks:Math.ceil(entries.length/128),controls:['Sample Select',...PAD_CONTROLS.map(c=>c[0]),...(entries.length>128?['Bank']:[])],macro:macro+1});macro++;

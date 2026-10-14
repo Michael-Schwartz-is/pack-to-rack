@@ -10,13 +10,13 @@ vm.runInContext(p.boxes.find(x=>x.box.id==='worker').box.code,ctx);
   await handlers.build();assert.equal(events.findLast(e=>e[0]==='built')[2],'p2r_Demo Pack');
   for(const sequential of [1,0]){
    handlers.name(...(sequential?['My','Custom','Kit']:['  My/Kit:  ']));
-   handlers.sequential(sequential);await handlers.build();const f=events.findLast(e=>e[0]==='built');assert(f);assert.equal(f[3],3);
+   await handlers.build();const f=events.findLast(e=>e[0]==='built');assert(f);assert.equal(f[3],3);
    assert.equal(f[2],sequential?'My Custom Kit':'My-Kit-');assert.equal(path.basename(f[1]),f[2]+'.adg');
    const mpath=path.join(path.dirname(f[1]),'manifest.json'),m=JSON.parse(fs.readFileSync(mpath));
-   assert.equal(m.layout,sequential?'sequential':'fixed');assert.deepEqual(m.pads.map(p=>p.note),sequential?[36,37,38]:[36,38,44]);
+   assert.equal(m.layout,'sequential');assert.deepEqual(m.pads.map(p=>p.note),[36,37,38]);assert.deepEqual(m.pads.map(p=>p.name),['Hi-Hats','Kicks','Snares']);
    handlers.verified_macros(3,3);const verified=JSON.parse(fs.readFileSync(mpath));assert.equal(verified.live_visible_macro_count,3);
   }
   handlers.name('   ');await handlers.build();assert.equal(events.findLast(e=>e[0]==='built')[2],'p2r_Demo Pack');
-  console.log('Embedded worker checkbox routing passed: sequential C1/C#1/D1 and fixed C1/D1/G#1; verification metadata persisted.');
+  console.log('Embedded worker: folder labels and consecutive pads preserved; rack naming and verification metadata persisted.');
  }finally{fs.rmSync(home,{recursive:true,force:true});}
 })().catch(e=>{console.error(e);process.exitCode=1;});

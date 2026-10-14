@@ -27,7 +27,7 @@ for b in boxes.values():
 boxes['title'].update(presentation=0)
 boxes['subtitle'].update(presentation=0)
 boxes['folderlabel'].update(presentation=0)
-boxes['statuslabel'].update(varname='statuslabel',text='',fontsize=10,presentation_rect=[112,138,296,20],textcolor=[.68,.68,.68,1])
+boxes['statuslabel'].update(varname='statuslabel',text='',fontsize=10,linecount=1,presentation_rect=[112,140,296,24],textcolor=[.68,.68,.68,1])
 boxes['choose'].update(hidden=1)
 boxes['choose'].update(activebgcolor=[.25,.25,.25,1],activebgoncolor=[.34,.34,.34,1],activetextcolor=[.68,.68,.68,1],activetextoncolor=[.86,.86,.86,1],rounded=.05,bordercolor=[.39,.39,.39,1],text='Browse…',texton='Browse…',fontsize=10,textjustification=1,presentation_rect=[12,136,92,20],bgcolor=[.25,.25,.25,1],bgoncolor=[.24,.24,.24,1],textcolor=[.68,.68,.68,1])
 boxes['build'].update(text='Build Rack',texton='Build Rack',activebgcolor=[1,.65,.32,0],activebgoncolor=[1,.75,.48,.12],activetextcolor=[.12,.12,.12,1],activetextoncolor=[.12,.12,.12,1],bordercolor=[0,0,0,0],focusbordercolor=[0,0,0,0],rounded=0,presentation=1,hidden=1,presentation_rect=ACTION_RECT,fontsize=14,bgcolor=[1,.65,.32,0],bgoncolor=[1,.75,.48,.12],textcolor=[.12,.12,.12,1],textoncolor=[.12,.12,.12,1])
@@ -36,9 +36,6 @@ copy=boxes['copy']
 for key in ['text','texton','mode','fontsize']:copy.pop(key,None)
 copy_help=('ON\nCopy samples beside the exported rack. Your original pack stays unchanged.\n\n'
            'OFF\nUse the original files without copying. Keep them in their original location.')
-sequential_help=('ON\nPlace drum types on consecutive pads: C1, C#1, D1…\n\n'
-                 'OFF\nUse fixed notes for each drum type: kick on C1, snare on D1…\n\n'
-                 'Each pad has a selector to choose its sample.')
 copy.update(maxclass='live.text',appearance=1,mode=1,text='Copy samples',texton='Copy samples',fontsize=11,numoutlets=2,outlettype=['int',''],presentation_rect=[274,56,134,20],annotation_name='Copy samples',annotation=copy_help,labeltextcolor=[.86,.86,.86,1])
 boxes['route'].update(text='route status folder built active ui',numoutlets=6,outlettype=['']*6)
 def add(id,kind,rect=None,**attrs):
@@ -53,8 +50,21 @@ add('name_route','newobj',text='route text')
 add('name_pre','newobj',text='prepend name')
 wire('rack_name','name_route');wire('name_route','name_pre');wire('name_pre','worker')
 # Read the current text even when the user clicks Build without pressing Enter.
-boxes['build_sel'].update(text='t b b',numoutlets=2,outlettype=['bang','bang'])
+boxes['build_sel'].update(text='t b b b',numoutlets=3,outlettype=['bang','bang','bang'])
 wire('build_sel','rack_name',1)
+add('destination_label','comment',[12,117,50,22],text='Save to',fontsize=10,fontname='Arial',textcolor=[.68,.68,.68,1],ignoreclick=1)
+add('destination_path','textedit',[64,117,274,22],varname='destination_path',text='User Library',fontsize=10,fontname='Arial',textcolor=[.94,.94,.94,1],bgcolor=[.19,.20,.21,1],border=1,bordercolor=[.36,.38,.39,1],rounded=4,lines=1,wordwrap=0,autoscroll=1,keymode=1,bangmode=0,outputmode=1,nosymquotes=1,valuemode=0,numinlets=1,numoutlets=3,outlettype=['','',''],parameter_enable=1,parameter_mappable=0,annotation='Choose where to save racks. Browse or type a full folder path. Clear this field to use the detected User Library. Each rack gets its own folder here.',saved_attribute_attributes={'valueof':{'parameter_longname':'Save destination','parameter_shortname':'Save folder','parameter_type':3,'parameter_invisible':1}})
+add('destination_browse','live.text',[346,118,62,20],varname='destination_browse',text='Browse…',texton='Browse…',fontsize=10,mode=0,numinlets=1,numoutlets=2,outlettype=['int',''],bgcolor=[.25,.25,.25,1],bgoncolor=[.34,.34,.34,1],activebgcolor=[.25,.25,.25,1],activebgoncolor=[.34,.34,.34,1],textcolor=[.86,.86,.86,1],activetextcolor=[.86,.86,.86,1],rounded=.05,bordercolor=[.39,.39,.39,1])
+add('destination_bang','newobj',text='t b')
+add('destination_dialog','newobj',text='opendialog fold')
+add('destination_set_trigger','newobj',text='t b l')
+add('destination_set','newobj',text='prepend set')
+add('destination_route','newobj',text='route text')
+add('destination_pre','newobj',text='prepend destination')
+wire('destination_browse','destination_bang');wire('destination_bang','destination_dialog')
+wire('destination_dialog','destination_set_trigger');wire('destination_set_trigger','destination_set',1);wire('destination_set','destination_path');wire('destination_set_trigger','destination_path')
+wire('destination_path','destination_route');wire('destination_route','destination_pre');wire('destination_pre','worker')
+wire('build_sel','destination_path',2)
 add('drop_background','panel',ACTION_RECT,varname='drop_background',bgcolor=[.19,.20,.21,1],border=1,bordercolor=[.36,.38,.39,1],rounded=0,ignoreclick=1)
 # Background first in draw order; dropfile remains the hit target.
 p['boxes'].insert(0,p['boxes'].pop())
@@ -69,13 +79,10 @@ for rect in [[30,69,13,2],[30,69,2,27],[41,69,2,7],[41,74,22,2],[61,74,2,22],[30
  drop_decorations.append(name)
  add(name,'panel',rect,varname=name,bgcolor=[1,.70,.38,1],border=0,rounded=1,ignoreclick=1)
 boxes['worker']['code']=boxes['worker']['code'].replace('const DROP_DECORATIONS=[];', 'const DROP_DECORATIONS='+json.dumps(drop_decorations)+';')
-add('sequential','live.text',[274,85,134,20],appearance=1,mode=1,text='Sequential pads',texton='Sequential pads',fontsize=11,labeltextcolor=[.86,.86,.86,1],numinlets=1,numoutlets=2,outlettype=['int',''],parameter_enable=1,varname='sequential_pads',annotation_name='Sequential pads',annotation=sequential_help,saved_attribute_attributes={'valueof':{'parameter_longname':'Sequential pads','parameter_shortname':'Sequential','parameter_type':2,'parameter_enum':['Fixed map','Sequential'],'parameter_initial_enable':1,'parameter_initial':[0]}})
-add('sequential_pre','newobj',text='prepend sequential')
-add('sequential_init','newobj',text='loadmess 0')
 add('uipatcher','newobj',text='thispatcher')
-wire('sequential','sequential_pre');wire('sequential_pre','worker');wire('sequential_init','sequential');wire('route','uipatcher',4)
+wire('route','uipatcher',4)
 # Disable checkbox changes during conversion, along with the existing buttons.
-wire('active','copy');wire('active','sequential');wire('active','drop_hint')
+wire('active','copy');wire('active','drop_hint');wire('active','destination_browse')
 p['dependency_cache']=[]
 p['appversion']={'major':9,'minor':1,'revision':4,'architecture':'arm64','modernui':1}
 p['project']['contents']={'patchers':{}}

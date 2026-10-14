@@ -37,6 +37,13 @@ run('scan=globalThis.scan;build=globalThis.build;');
   assert.equal(outputs.at(-1),path.win32.join(libraryParent,'My Library','Presets','Instruments','Drum Rack','Pack to Rack'));
   assert.equal(scanned.at(-1),'E:/Samples_Type');
  }
+ for(const destination of ['D:/Dropbox/My Racks','F:\\Drums & Kits','\\\\studio-server\\racks']){
+  handlers.destination(destination);await handlers.build();
+  assert.equal(outputs.at(-1),destination,'Custom destination must be used exactly, without appending a User Library tree');
+ }
+ handlers.destination('my/racks');const prior=outputs.length;await handlers.build();
+ assert.equal(outputs.length,prior);assert.match(events.findLast(e=>e[0]==='status')[1],/full folder path/);
+ handlers.destination('User Library');assert.equal(run('outputDirectory()'),path.win32.join('\\\\studio-server\\sounds','My Library','Presets','Instruments','Drum Rack','Pack to Rack'));
  config='invalid settings';assert.equal(run('userLibrary()'),path.win32.join(home,'Documents','Ableton','User Library'));
- console.log('Windows embedded worker: drive/UNC paths, default/custom library, build destination and exact saved path passed.');
+ console.log('Windows embedded worker: drive/UNC paths, default/custom library, explicit destination override, invalid destination rejection and saved path passed.');
 })().catch(e=>{console.error(e);process.exitCode=1;});
