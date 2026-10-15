@@ -22,13 +22,13 @@ The earlier Python-backed package is retained under `m4l/Pack to Rack` as develo
 
 Run `python3 scripts/build_single_amxd.py` before publishing device changes. It writes identical AMXDs to `dist/` and `website/downloads/` and updates the website's version label from `VERSION`. The embedded-device test rejects a stale website copy. Cloudflare serves `website/`, so updating only `dist/` does not update the website download.
 
-Windows path and export regressions: the embedded worker preserves drive roots (`E:/…`, `C:\…`) and UNC paths instead of interpreting drive letters as macOS volume prefixes. Exports follow the User Library in the most recently written readable Live 12 `Library.cfg`, with platform defaults if settings are unavailable. Manual-load messages retain the actual `.adg` path, also available in the status tooltip and Max Console. Windows tests simulate Windows path semantics and settings on macOS; an end-to-end Windows Live run is still required.
+Path regressions exercise Windows drive letters/UNC paths and mounted macOS volumes. Source and export selections go through the same normalization. The export dialog must return a path before conversion starts; cancellation writes nothing. These platform tests simulate path semantics and are not an end-to-end test on Windows.
 
 ## Device workflow
 
 Drop a sample folder onto the device, or click the drop field. It scans automatically and the drop field becomes **Build Rack**. Edit the rack name above the button, then click to create and load the rack on a new MIDI track. **Change folder…** selects another pack.
 
-**Save to** accepts a full folder path or a folder chosen with **Browse…**. A non-empty custom destination overrides library detection and is used directly. Each export still creates its own rack folder and never overwrites an earlier export. The destination text is a non-automatable Blob device parameter so Live can store it with the Set; the Build trigger reads the current field before starting conversion. Clear the field or enter `User Library` to return to the default.
+**Build Rack** emits `choose_destination` to a native `opendialog fold`. Its selected path goes to `export`; its cancellation outlet sends `cancel_export`. The worker locks source/name/options while the dialog is open and only exports after a selection. Each build asks again; there is no User Library discovery, default destination, or persistent path parameter. A successful export still creates its own rack folder and never overwrites an earlier export.
 
 - **Copy samples** (on): keep audio beside the exported rack. Off references the original pack.
 

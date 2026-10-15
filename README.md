@@ -1,6 +1,6 @@
 # Pack to Rack
 
-Current version: **0.3**. See the [changelog](CHANGELOG.md).
+Current version: **0.4**. See the [changelog](CHANGELOG.md).
 
 [Website](https://p2r.gushon.com)
 
@@ -12,7 +12,7 @@ Turn a folder of one-shots into a rack you can play, tweak, and explore. Hear yo
 
 **[Download Pack 2 Rack.amxd](https://github.com/Michael-Schwartz-is/pack-to-rack/raw/refs/heads/main/dist/Pack%202%20Rack.amxd)**
 
-Requires Ableton Live 12 with Max for Live, Sampler, and Max 9.1 or newer. Tested with Live 12.4.2 Suite / Max 9.1.4 on macOS. Load the device onto a MIDI track, drop a one-shots folder onto it, then click **Build Rack**. The single AMXD includes everything it needs; no separate Python or Node installation is required.
+Requires Max for Live, Sampler, and Max 9.1 or newer. Rack templates currently target Live 12.4; Live 12.2 users have reported that generated presets cannot be loaded. Tested with Live 12.4.2 Suite / Max 9.1.4 on macOS. Load the device onto a MIDI track, drop a one-shots folder onto it, then click **Build Rack** and choose an export folder. The single AMXD includes everything it needs; no separate Python or Node installation is required.
 
 ## Less clicking through folders. More hearing what works.
 
@@ -35,7 +35,7 @@ Drums / One-shots
 
 ## Your one-shots, ready to mix and match.
 
-Pack to Rack gives each sample folder its own pad and a selector knob with the same name. Choose where to save the rack and copied samples, or use your User Library.
+Pack to Rack gives each sample folder its own pad and a selector knob with the same name. Click Build Rack and choose where to save the rack and copied samples.
 
 Start a pattern, then swap kicks, snares, hats, and other sounds while it plays. Explore the pack by making music with it.
 

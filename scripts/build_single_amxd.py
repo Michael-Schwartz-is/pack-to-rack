@@ -37,7 +37,7 @@ for key in ['text','texton','mode','fontsize']:copy.pop(key,None)
 copy_help=('ON\nCopy samples beside the exported rack. Your original pack stays unchanged.\n\n'
            'OFF\nUse the original files without copying. Keep them in their original location.')
 copy.update(maxclass='live.text',appearance=1,mode=1,text='Copy samples',texton='Copy samples',fontsize=11,numoutlets=2,outlettype=['int',''],presentation_rect=[274,56,134,20],annotation_name='Copy samples',annotation=copy_help,labeltextcolor=[.86,.86,.86,1])
-boxes['route'].update(text='route status folder built active ui',numoutlets=6,outlettype=['']*6)
+boxes['route'].update(text='route status folder built active ui choose_destination',numoutlets=7,outlettype=['']*7)
 def add(id,kind,rect=None,**attrs):
  b={'id':id,'maxclass':kind,'patching_rect':[600,400,150,20],**attrs}
  if rect:b.update(presentation=1,presentation_rect=rect)
@@ -50,21 +50,15 @@ add('name_route','newobj',text='route text')
 add('name_pre','newobj',text='prepend name')
 wire('rack_name','name_route');wire('name_route','name_pre');wire('name_pre','worker')
 # Read the current text even when the user clicks Build without pressing Enter.
-boxes['build_sel'].update(text='t b b b',numoutlets=3,outlettype=['bang','bang','bang'])
+boxes['build_sel'].update(text='t b b',numoutlets=2,outlettype=['bang','bang'])
 wire('build_sel','rack_name',1)
-add('destination_label','comment',[12,117,50,22],text='Save to',fontsize=10,fontname='Arial',textcolor=[.68,.68,.68,1],ignoreclick=1)
-add('destination_path','textedit',[64,117,274,22],varname='destination_path',text='User Library',fontsize=10,fontname='Arial',textcolor=[.94,.94,.94,1],bgcolor=[.19,.20,.21,1],border=1,bordercolor=[.36,.38,.39,1],rounded=4,lines=1,wordwrap=0,autoscroll=1,keymode=1,bangmode=0,outputmode=1,nosymquotes=1,valuemode=0,numinlets=1,numoutlets=3,outlettype=['','',''],parameter_enable=1,parameter_mappable=0,annotation='Choose where to save racks. Browse or type a full folder path. Clear this field to use the detected User Library. Each rack gets its own folder here.',saved_attribute_attributes={'valueof':{'parameter_longname':'Save destination','parameter_shortname':'Save folder','parameter_type':3,'parameter_invisible':1}})
-add('destination_browse','live.text',[346,118,62,20],varname='destination_browse',text='Browse…',texton='Browse…',fontsize=10,mode=0,numinlets=1,numoutlets=2,outlettype=['int',''],bgcolor=[.25,.25,.25,1],bgoncolor=[.34,.34,.34,1],activebgcolor=[.25,.25,.25,1],activebgoncolor=[.34,.34,.34,1],textcolor=[.86,.86,.86,1],activetextcolor=[.86,.86,.86,1],rounded=.05,bordercolor=[.39,.39,.39,1])
-add('destination_bang','newobj',text='t b')
+add('destination_hint','comment',[12,118,396,18],text='Build Rack asks where to save.',fontsize=10,fontname='Arial',textcolor=[.68,.68,.68,1],ignoreclick=1)
 add('destination_dialog','newobj',text='opendialog fold')
-add('destination_set_trigger','newobj',text='t b l')
-add('destination_set','newobj',text='prepend set')
-add('destination_route','newobj',text='route text')
-add('destination_pre','newobj',text='prepend destination')
-wire('destination_browse','destination_bang');wire('destination_bang','destination_dialog')
-wire('destination_dialog','destination_set_trigger');wire('destination_set_trigger','destination_set',1);wire('destination_set','destination_path');wire('destination_set_trigger','destination_path')
-wire('destination_path','destination_route');wire('destination_route','destination_pre');wire('destination_pre','worker')
-wire('build_sel','destination_path',2)
+add('export_pre','newobj',text='prepend export')
+add('export_cancel','message',text='cancel_export')
+wire('route','destination_dialog',5)
+wire('destination_dialog','export_pre');wire('export_pre','worker')
+wire('destination_dialog','export_cancel',1);wire('export_cancel','worker')
 add('drop_background','panel',ACTION_RECT,varname='drop_background',bgcolor=[.19,.20,.21,1],border=1,bordercolor=[.36,.38,.39,1],rounded=0,ignoreclick=1)
 # Background first in draw order; dropfile remains the hit target.
 p['boxes'].insert(0,p['boxes'].pop())
@@ -85,7 +79,7 @@ add('sequential_pre','newobj',text='prepend sequential')
 wire('sequential','sequential_pre');wire('sequential_pre','worker')
 wire('route','uipatcher',4)
 # Disable checkbox changes during conversion, along with the existing buttons.
-wire('active','copy');wire('active','sequential');wire('active','drop_hint');wire('active','destination_browse')
+wire('active','copy');wire('active','sequential');wire('active','drop_hint')
 p['dependency_cache']=[]
 p['appversion']={'major':9,'minor':1,'revision':4,'architecture':'arm64','modernui':1}
 p['project']['contents']={'patchers':{}}

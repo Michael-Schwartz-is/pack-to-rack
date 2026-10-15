@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4 — 2026-10-15
+
+- Build Rack opens a destination folder dialog for every export. Cancelling creates nothing and keeps the source selected.
+- Remove automatic User Library discovery and the persistent save-path field.
+- Preserve mounted macOS volume names for both source and export folders, alongside Windows drive letters and network paths.
+- Folder grouping, Sampler and both pad-layout modes stay available.
+
+The Live 12.2 preset-loading report remains unresolved; this release does not claim compatibility with that version.
+
 ## 0.3 — 2026-10-14
 
 - Restore Sequential pads. On: consecutive notes from C1. Off: familiar positions for exact folder names such as Kicks and Snares, with unused pads for every other folder.

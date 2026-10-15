@@ -1,30 +1,6 @@
 const max=require('max-api');
-const os=require('os');
 const {execFile}=require('child_process');
-function userLibrary(){
- const home=os.homedir();
- const fallback=path.join(home,process.platform==='win32'?'Documents':'Music','Ableton','User Library');
- const preferences=process.platform==='win32'?path.join(process.env.APPDATA||path.join(home,'AppData','Roaming'),'Ableton'):path.join(home,'Library','Preferences','Ableton');
- try{
-  const configs=fs.readdirSync(preferences).filter(n=>/^Live 12\./.test(n)).map(n=>path.join(preferences,n,'Library.cfg')).filter(f=>fs.existsSync(f)).sort((a,b)=>fs.statSync(b).mtimeMs-fs.statSync(a).mtimeMs);
-  for(const file of configs){
-   try{
-    const project=find(parseXml(fs.readFileSync(file,'utf8')),'ContentLibrary/UserLibrary/LibraryProject');
-    const parent=find(project,'ProjectPath')?.attrs.Value,name=find(project,'ProjectName')?.attrs.Value;
-    if(parent&&name&&path.isAbsolute(parent))return path.join(parent,name);
-   }catch(e){/* Older or incomplete settings: try the next installed Live 12. */}
-  }
- }catch(e){/* Live has not written settings yet; use its platform default. */}
- return fallback;
-}
-function outputDirectory(){
- if(destination){
-  if(!path.isAbsolute(destination))throw Error('Save destination must be a full folder path. Use Browse to choose it.');
-  return destination;
- }
- return path.join(userLibrary(),'Presets','Instruments','Drum Rack','Pack to Rack');
-}
-let folder='',rackName='',destination='',copySamples=true,sequential=false,busy=false,latest='';
+let folder='',rackName='',copySamples=true,sequential=false,busy=false,awaitingDestination=false,latest='';
 function status(s){max.outlet('status',s);}
 function uiBox(name,attribute,...values){max.outlet('ui','script','sendbox',name,attribute,...values);}
 const DROP_DECORATIONS=[];
@@ -49,8 +25,15 @@ function readyField(ready){
  uiBox('choose_pack','texton',ready?'Change folder…':'Browse…');
 }
 function normalize(p){
- // Max uses volume:/path on macOS and E:/path on Windows. Keep drive roots.
- return /^[A-Za-z]:[\\/]/.test(p)?p:p.replace(/^[^:/]+:(\/.*)$/,'$1');
+ if(/^[A-Za-z]:[\\/]/.test(p))return p;
+ const match=p.match(/^([^:/]+):(\/.*)$/);
+ if(!match)return p;
+ if(process.platform==='darwin'){
+  const volume=path.join('/Volumes',match[1]);
+  if(fs.existsSync(volume))return path.join(volume,match[2]);
+  if(!fs.existsSync(match[2]))return path.join(volume,match[2]);
+ }
+ return match[2];
 }
 function defaultName(p){const base=path.basename(p);return /^(drum[ _-]*(hits|one[ _-]*shots)|one[ _-]*shots)$/i.test(base)?path.basename(path.dirname(p)):base;}
 function cleanName(s){return s.replace(/[/:\\\x00-\x1f]/g,'-').replace(/^[ .]+|[ .]+$/g,'');}
@@ -64,19 +47,30 @@ async function scanFolder(p){
 }
 max.addHandler('folder',(...args)=>scanFolder(args.join(' ')));
 max.addHandler('name',(...args)=>{if(!busy)rackName=cleanName(args.join(' '));});
-max.addHandler('destination',(...args)=>{
- if(busy)return;
- const value=args.join(' ').trim();
- destination=value==='User Library'?'':normalize(value.replace(/^"(.*)"$/,'$1'));
- uiBox('destination_path','annotation',destination||'Using the detected User Library. Browse or type a full folder path to choose another destination.');
-});
 max.addHandler('copy',v=>{copySamples=!!Number(v);});
 max.addHandler('sequential',v=>{sequential=!!Number(v);});
-max.addHandler('build',async()=>{
- if(busy)return;if(!folder){status('Choose a sample-pack or drum_hits folder first.');return;}
- busy=true;max.outlet('active',0);uiBox('destination_path','readonly',1);status('Building Drum Rack'+(copySamples?' and copying samples…':'…'));await nextTurn();
- try{const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);const result=build(scan(folder),outputDirectory(),{},copySamples,name,{layout:sequential?'sequential':'fixed'});latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);}
- catch(e){status('Error: '+e.message);}finally{busy=false;max.outlet('active',1);uiBox('destination_path','readonly',0);}
+function finishBuild(){busy=false;awaitingDestination=false;max.outlet('active',1);uiBox('rack_name','readonly',0);}
+max.addHandler('build',()=>{
+ if(busy)return;if(!folder){status('Choose a sample folder first.');return;}
+ busy=true;awaitingDestination=true;max.outlet('active',0);uiBox('rack_name','readonly',1);
+ status('Choose where to save the rack…');max.outlet('choose_destination','bang');
+});
+max.addHandler('cancel_export',()=>{
+ if(!awaitingDestination)return;
+ finishBuild();status('Export cancelled. Your source folder is still selected.');
+});
+max.addHandler('export',async(...args)=>{
+ if(!awaitingDestination)return;
+ awaitingDestination=false;
+ try{
+  const destination=normalize(args.join(' '));
+  if(!path.isAbsolute(destination))throw Error('Choose a full folder path for the export.');
+  status('Building Drum Rack'+(copySamples?' and copying samples…':'…'));await nextTurn();
+  const name=rackName||suggestedName(folder);max.outlet('ui','script','send','rack_name','set',name);
+  const result=build(scan(folder),destination,{},copySamples,name,{layout:sequential?'sequential':'fixed'});
+  latest=result.rack;uiBox('statuslabel','annotation','Saved preset: '+latest);max.post('Saved preset: '+latest);
+  status('Built '+result.pads.length+' pads / '+result.samples+' sounds. Loading in Live…');max.outlet('built',result.rack,name,result.pads.length,process.platform==='darwin'?1:0);
+ }catch(e){status('Error: '+e.message);}finally{finishBuild();}
 });
 max.addHandler('load',(...args)=>{
  const file=args.join(' ');if(!latest||file!==latest||!fs.existsSync(file)){status('No completed rack to load.');return;}
